@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using com.howmuchof.squirrgithuels.wp.Resources;
 using GalaSoft.MvvmLight;
@@ -14,12 +15,12 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        public ObservableCollection<DataItem> DataService { get; private set; }
 
 
         public const string DiscriptionPropertyName = "SelectedItem";
-        public const string HourPropertyName = "Hour";
-        public const string MinutPropertyName = "Minute";
+        public const string HourPropertyName        = "Hour";
+        public const string MinutPropertyName       = "Minute";
         
         private string _hour = string.Empty;
 
@@ -51,20 +52,26 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel(IDataService dataService)
+        public MainViewModel()//ObservableCollection<IDataService> dataService)
         {
-            _dataService = dataService;
-            _dataService.GetData(
-                (item, error) =>
+            DataService =
+                new ObservableCollection<DataItem>(new DataItem[]
                 {
-                    if (error != null)
-                    {
-                        // Report error here
-                        return;
-                    }
-
-                    //WelcomeTitle = item.Title;
+                    new DataItem(4, DateTime.Now), 
+                    new DataItem(5, DateTime.Now)
                 });
+
+            //DataService.GetData(
+            //    (item, error) =>
+            //    {
+            //        if (error != null)
+            //        {
+            //            // Report error here
+            //            return;
+            //        }
+
+            //        //WelcomeTitle = item.Title;
+            //    });
         }
 
         ////public override void Cleanup()

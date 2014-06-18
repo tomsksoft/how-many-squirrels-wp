@@ -7,14 +7,21 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 {
     public class DataItem
     {
-        public DataItem(string title)
+        public DataItem(int count, DateTime date)
         {
-            Title = title;
+            Count = count;
+            Date = date;
         }
 
-        public string Title
+        public int Count
         {
             get;
+            private set;
+        }
+
+        public DateTime Date
+        {
+            get; 
             private set;
         }
     }

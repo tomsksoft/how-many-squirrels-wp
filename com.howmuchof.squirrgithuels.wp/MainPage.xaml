@@ -70,7 +70,16 @@
             
             <phone:PivotItem Header="{Binding LocalizedResources.AddPage, Source={StaticResource LocalizedStrings}}">
                 
-                
+                <ListBox ItemsSource="{Binding DataService}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Date}" FontSize="40"/>
+                                <TextBlock Text="{Binding Count}" FontSize="40" Margin="60,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 
             </phone:PivotItem>
             

@@ -39,6 +39,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<AddViewModel>();
         }
 
         /// <summary>
@@ -52,6 +53,14 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        public AddViewModel Add
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddViewModel>();
             }
         }
 

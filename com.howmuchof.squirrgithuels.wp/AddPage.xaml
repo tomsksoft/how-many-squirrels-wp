@@ -15,7 +15,7 @@
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
-                            DataContext="{Binding Main, Source={StaticResource Locator}}">
+                            DataContext="{Binding Add, Source={StaticResource Locator}}">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
 	<Grid x:Name="LayoutRoot"
@@ -108,8 +108,8 @@
 			<tk:ToggleSwitch x:Name="Toggle1" Content="Выбрать свое время" VerticalAlignment="Center"/>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 				<TextBlock Text="Время добавления" VerticalAlignment="Center"/>
-				<tk:DatePicker x:Name="datePicker" IsEnabled="False" />
-				<tk:TimePicker x:Name="timePicker" IsEnabled="False"/>
+				<tk:DatePicker x:Name="datePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False" />
+                <tk:TimePicker x:Name="timePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False"/>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 				<TextBlock Text="Количество" VerticalAlignment="Center"/>
@@ -117,7 +117,7 @@
 				<TextBox Width="110" InputScope="Number"/>
 				<Button Content="+" />
 			</StackPanel>
-			<Button Content="Добавить"/>
+			<Button Content="Добавить" Margin="0,50,0,0"/>
                 
 		</StackPanel>
 
