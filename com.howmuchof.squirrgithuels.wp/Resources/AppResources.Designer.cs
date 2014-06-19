@@ -116,6 +116,15 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Список.
+        /// </summary>
+        public static string ListPage {
+            get {
+                return ResourceManager.GetString("ListPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Главная.
         /// </summary>
         public static string MainPage {

@@ -57,8 +57,19 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             DataService =
                 new ObservableCollection<DataItem>(new DataItem[]
                 {
-                    new DataItem(4, DateTime.Now), 
-                    new DataItem(5, DateTime.Now)
+                    new DataItem(4, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now), 
+                    new DataItem(5, DateTime.Now, DateTime.Now)
                 });
 
             //DataService.GetData(

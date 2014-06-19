@@ -7,10 +7,11 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 {
     public class DataItem
     {
-        public DataItem(int count, DateTime date)
+        public DataItem(int count, DateTime date, DateTime time)
         {
             Count = count;
             Date = date;
+            Time = time;
         }
 
         public int Count
@@ -23,6 +24,12 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         {
             get; 
             private set;
+        }
+
+        public DateTime Time
+        {
+            get; 
+            private set; 
         }
     }
 }

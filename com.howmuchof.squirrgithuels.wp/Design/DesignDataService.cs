@@ -9,7 +9,7 @@ namespace com.howmuchof.squirrgithuels.wp.Design
         {
             // Use this to create design time data
 
-            var item = new DataItem(4, DateTime.Now);
+            var item = new DataItem(4, DateTime.Now, DateTime.Now);
             callback(item, null);
         }
     }

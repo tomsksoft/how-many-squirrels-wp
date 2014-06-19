@@ -150,4 +150,7 @@
   <data name="NewParametrs" xml:space="preserve">
     <value>Ввести свои параметры</value>
   </data>
+  <data name="ListPage" xml:space="preserve">
+    <value>Список</value>
+  </data>
 </root>
