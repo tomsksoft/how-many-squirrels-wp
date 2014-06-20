@@ -8,16 +8,16 @@ using System.Windows.Data;
 
 namespace com.howmuchof.squirrgithuels.wp.Converters
 {
-    public class TimeConverter : IValueConverter
+    public class StringToIntConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((DateTime) value).ToShortTimeString();
+            return value.ToString(); 
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return int.Parse((string)value);
         }
     }
 }

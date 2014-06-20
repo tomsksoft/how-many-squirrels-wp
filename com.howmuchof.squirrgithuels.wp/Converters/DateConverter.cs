@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace com.howmuchof.squirrgithuels.wp.Converters
 {
-    class DateConverter : IValueConverter
+    public class DateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

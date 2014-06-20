@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using System.Windows.Threading;
+using com.howmuchof.squirrgithuels.wp.Model;
+using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using com.howmuchof.squirrgithuels.wp.Resources;
 
 namespace com.howmuchof.squirrgithuels.wp
 {
@@ -26,6 +19,8 @@ namespace com.howmuchof.squirrgithuels.wp
             //BuildLocalizedApplicationBar();
         }
 
+        
+
         // Sample code for building a localized ApplicationBar
         //private void BuildLocalizedApplicationBar()
         //{
@@ -41,5 +36,23 @@ namespace com.howmuchof.squirrgithuels.wp
         //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
         //    ApplicationBar.MenuItems.Add(appBarMenuItem);
         //}
+        private void AppBarOkButton_OnClick(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void Ok(object sender, EventArgs e)
+        {
+            var add = ((AddViewModel) DataContext);
+            ViewModelLocator.Main.AddItem(new DataItem(add.Count, add.Date, add.Date));
+            if(NavigationService.CanGoBack)
+                NavigationService.GoBack();
+        }
+
+        private void Cancel(object sender, EventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+        }
     }
 }

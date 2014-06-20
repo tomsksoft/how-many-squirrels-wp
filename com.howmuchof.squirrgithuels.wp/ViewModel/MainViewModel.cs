@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Input;
 using com.howmuchof.squirrgithuels.wp.Resources;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
+using GalaSoft.MvvmLight.Command;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {
@@ -15,74 +18,61 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        public ObservableCollection<DataItem> DataService { get; private set; }
-
-
-        public const string DiscriptionPropertyName = "SelectedItem";
-        public const string HourPropertyName        = "Hour";
-        public const string MinutPropertyName       = "Minute";
-        
-        private string _hour = string.Empty;
-
-
-        public string Hour   
+        private ObservableCollection<DataItem> _dataItems;  
+        public ObservableCollection<DataItem> DataService
         {
-            get
+            get { return _dataItems; }
+            private set
             {
-                return DateTime.Now.Hour.ToString();
-            }
-            set
-            {
-                RaisePropertyChanged(HourPropertyName);
-            }
-        }
-        public string Minute 
-        {
-            get
-            {
-                return DateTime.Now.Minute.ToString();
-            }
-            set
-            {
-                RaisePropertyChanged(HourPropertyName);
+                if(_dataItems == value) return;
+
+                _dataItems = value;
+                RaisePropertyChanged("DataService");
             }
         }
 
-
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
-        public MainViewModel()//ObservableCollection<IDataService> dataService)
+        public void ReadDataFromDb()
         {
-            DataService =
-                new ObservableCollection<DataItem>(new DataItem[]
-                {
-                    new DataItem(4, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now), 
-                    new DataItem(5, DateTime.Now, DateTime.Now)
-                });
+            using (var db = new ItemDataContext())
+            {
+                var items = from DataItem item in db.DataItems select item;
+                DataService = new ObservableCollection<DataItem>(items);
+            }
+            
+        }
 
-            //DataService.GetData(
-            //    (item, error) =>
+        public void AddItem(DataItem item)
+        {
+            //using (var db = new ItemDataContext())
+            //{
+            //    db.DataItems.InsertOnSubmit(item);
+            //    db.SubmitChanges();
+            //}
+            DataService.Add(item);
+        }
+
+        public MainViewModel()
+        {
+            //DataService =
+            //    new ObservableCollection<DataItem>(new DataItem[]
             //    {
-            //        if (error != null)
-            //        {
-            //            // Report error here
-            //            return;
-            //        }
-
-            //        //WelcomeTitle = item.Title;
+            //        new DataItem(4, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now), 
+            //        new DataItem(5, DateTime.Now, DateTime.Now)
             //    });
+
+            DataService = new ObservableCollection<DataItem>();
+            
         }
 
         ////public override void Cleanup()

@@ -40,6 +40,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddViewModel>();
+            
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public MainViewModel Main
+        public static MainViewModel Main
         {
             get
             {
@@ -56,7 +57,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
-        public AddViewModel Add
+        public static AddViewModel Add
         {
             get
             {
