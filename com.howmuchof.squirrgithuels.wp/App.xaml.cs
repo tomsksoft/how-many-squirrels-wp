@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using com.howmuchof.squirrgithuels.wp.Model;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
@@ -57,7 +57,13 @@ namespace com.howmuchof.squirrgithuels.wp
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            using (var db = new ItemDataContext())
+                if (!db.DatabaseExists())           //Если базы данных еще нет
+                    db.CreateDatabase();            //создадим ее
+
+            ViewModelLocator.Main.ReadDataFromDb();
         }
+
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated

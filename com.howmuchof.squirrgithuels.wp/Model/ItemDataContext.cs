@@ -1,13 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
+﻿using System.Data.Linq;
 
 namespace com.howmuchof.squirrgithuels.wp.Model
 {
     public class ItemDataContext : DataContext
     {
-        private const string DbConnectionString = "Data Source=isostore:/ToDo.sdf";
+        private const string DbConnectionString = "Data Source=isostore:/HowHuchOf.sdf";
         public ItemDataContext() : base(DbConnectionString) { }
 
         public Table<DataItem> DataItems;

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
-using com.howmuchof.squirrgithuels.wp.Resources;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
-using GalaSoft.MvvmLight.Command;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {
@@ -43,36 +38,17 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         public void AddItem(DataItem item)
         {
-            //using (var db = new ItemDataContext())
-            //{
-            //    db.DataItems.InsertOnSubmit(item);
-            //    db.SubmitChanges();
-            //}
+            using (var db = new ItemDataContext())
+            {
+                db.DataItems.InsertOnSubmit(item);
+                db.SubmitChanges();
+            }
             DataService.Add(item);
         }
 
         public MainViewModel()
         {
-            //DataService =
-            //    new ObservableCollection<DataItem>(new DataItem[]
-            //    {
-            //        new DataItem(4, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now), 
-            //        new DataItem(5, DateTime.Now, DateTime.Now)
-            //    });
-
-            DataService = new ObservableCollection<DataItem>();
-            
+            DataService = new ObservableCollection<DataItem>();   
         }
 
         ////public override void Cleanup()

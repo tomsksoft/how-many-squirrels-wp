@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Windows.Input;
-using com.howmuchof.squirrgithuels.wp.Model;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {

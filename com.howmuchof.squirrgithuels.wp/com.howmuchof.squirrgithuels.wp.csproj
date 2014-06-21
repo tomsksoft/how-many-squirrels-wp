@@ -98,7 +98,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\DateConverter.cs" />
-    <Compile Include="Converters\StringToIntConverter.cs" />
     <Compile Include="Converters\TimeConverter.cs" />
     <Compile Include="Model\ItemDataContext.cs" />
     <Compile Include="Design\DesignDataService.cs" />
