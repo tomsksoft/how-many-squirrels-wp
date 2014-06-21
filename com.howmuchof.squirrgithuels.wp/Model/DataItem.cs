@@ -90,6 +90,12 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         [Column(IsVersion = true)]
         private Binary _version;
 
+        public override bool Equals(object obj)
+        {
+            var t = (DataItem) obj;
+            return Date == t.Date && Time == t.Time && Count == t.Count;
+        }
+
         #region INotifyPropertyChanged AND INotifyPropertyChanging MEMBERS
 
         public event PropertyChangedEventHandler PropertyChanged;

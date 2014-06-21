@@ -29,14 +29,14 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            if (ViewModelBase.IsInDesignModeStatic)
-            {
-                SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
-            }
-            else
-            {
-                SimpleIoc.Default.Register<IDataService, DataService>();
-            }
+            //if (ViewModelBase.IsInDesignModeStatic)
+            //{
+            //    SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
+            //}
+            //else
+            //{
+            //    SimpleIoc.Default.Register<IDataService, DataItems>();
+            //}
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddViewModel>();

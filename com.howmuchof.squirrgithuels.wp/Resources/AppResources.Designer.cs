@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace com.howmuchof.squirrgithuels.wp.Resources {
+    using System;
+    
+    
     /// <summary>
     ///   Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
     /// </summary>
@@ -113,6 +116,15 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Введите параметр.
+        /// </summary>
+        public static string ChangeParametr {
+            get {
+                return ResourceManager.GetString("ChangeParametr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Список.
         /// </summary>
         public static string ListPage {
@@ -154,6 +166,15 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
         public static string ResourceLanguage {
             get {
                 return ResourceManager.GetString("ResourceLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Настройки.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
     }

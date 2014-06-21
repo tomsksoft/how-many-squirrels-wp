@@ -19,7 +19,7 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:TimeConverter x:Name="TimeConverter1" />
-        <converters:DateConverter x:Name="DateConverter1" />
+        <converters:TimeConverter x:Name="DateConverter1" />
     </phone:PhoneApplicationPage.Resources>
     
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -53,25 +53,26 @@
 
         <!--TitlePanel contains the name of the application and page title-->
 
-        <phone:Pivot Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" 
-                     Grid.RowSpan="2">
+        <phone:Pivot Name="pivot1" Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" 
+                     Grid.RowSpan="2" SelectionChanged="Pivot_SelectionChanged">
 
-            <phone:PivotItem Header="{Binding LocalizedResources.MainPage, Source={StaticResource LocalizedStrings}}">
-                
-                <StackPanel>
-                    <TextBlock Text="{Binding LocalizedResources.AppDiscription, Source={StaticResource LocalizedStrings}}"
-                               Style="{StaticResource PhoneTextNormalStyle}"
-                               TextWrapping="Wrap"
-                               FontSize="25"/>
+            <phone:PivotItem Header="{Binding LocalizedResources.MainPage, Source={StaticResource LocalizedStrings}}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ScrollViewer>
+                    <StackPanel>
+                        <Image Source="/Assets/belka.png" Width="150" Margin="0,-9,0,0"/>
+                        <TextBlock Text="{Binding LocalizedResources.AppDiscription, Source={StaticResource LocalizedStrings}}"
+                                   Style="{StaticResource PhoneTextNormalStyle}"
+                                   TextWrapping="Wrap"
+                                   FontSize="20"/>
 
-                    <Button Content="{Binding LocalizedResources.NewParametrs, Source={StaticResource LocalizedStrings}}" 
-                        Margin="0,50,0,0"/>
+                        <Button Content="{Binding LocalizedResources.NewParametrs, Source={StaticResource LocalizedStrings}}" />
 
-                    <Button Content="{Binding LocalizedResources.AppBarButtonText, Source={StaticResource LocalizedStrings}}" Click="appBarButton_Click"/>
-                    <Button Content="{Binding LocalizedResources.AppGraphText, Source={StaticResource LocalizedStrings}}" Click="Button_Click"/>
-
-                </StackPanel>
-                
+                        <Button Content="{Binding LocalizedResources.AppBarButtonText, Source={StaticResource LocalizedStrings}}" Click="AddButton_Click"/>
+                        <Button Content="{Binding LocalizedResources.AppGraphText, Source={StaticResource LocalizedStrings}}" />
+                        <TextBlock Text="Created by Nadyrshin Stanislav" HorizontalAlignment="Center"  />
+                        <TextBlock Text="Copyright ©  2014" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </ScrollViewer>
             </phone:PivotItem>
             
             <phone:PivotItem Header="{Binding LocalizedResources.ListPage, Source={StaticResource LocalizedStrings}}">
@@ -91,9 +92,9 @@
                     <TextBlock Text="Количество" FontSize="30" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
                    
                     
-                    <toolkit:LongListMultiSelector ItemsSource="{Binding DataService}" Grid.ColumnSpan="2" Grid.Column="0"
+                    <toolkit:LongListMultiSelector ItemsSource="{Binding DataItems}" Grid.ColumnSpan="2" Grid.Column="0"
                                                    Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                   Margin="0,20,0,0">
+                                                   Margin="0,20,0,0" Name="MultiSelector" IsSelectionEnabledChanged="MultiSelector_IsSelectionEnabledChanged">
                         <toolkit:LongListMultiSelector.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,10">

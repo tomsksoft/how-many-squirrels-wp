@@ -2,11 +2,10 @@
 using System.Windows.Controls;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
-using Microsoft.Phone.Controls;
 
 namespace com.howmuchof.squirrgithuels.wp
 {
-    public partial class AddPage : PhoneApplicationPage
+    public partial class AddPage
     {
         // Constructor
         public AddPage()
@@ -28,6 +27,16 @@ namespace com.howmuchof.squirrgithuels.wp
         {
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
+        }
+
+        private void Plus_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ((AddViewModel) DataContext).Count++;
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ((AddViewModel)DataContext).Count--;
         }
     }
 }

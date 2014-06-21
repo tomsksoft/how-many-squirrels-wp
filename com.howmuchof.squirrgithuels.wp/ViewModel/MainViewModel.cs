@@ -14,15 +14,15 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<DataItem> _dataItems;  
-        public ObservableCollection<DataItem> DataService
+        public ObservableCollection<DataItem> DataItems
         {
             get { return _dataItems; }
             private set
             {
                 if(_dataItems == value) return;
-
-                _dataItems = value;
-                RaisePropertyChanged("DataService");
+;
+                _dataItems = new ObservableCollection<DataItem>(value.OrderByDescending(x => x.Date));
+                RaisePropertyChanged("DataItems");
             }
         }
 
@@ -31,7 +31,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             using (var db = new ItemDataContext())
             {
                 var items = from DataItem item in db.DataItems select item;
-                DataService = new ObservableCollection<DataItem>(items);
+                DataItems = new ObservableCollection<DataItem>(items);
             }
             
         }
@@ -43,12 +43,23 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 db.DataItems.InsertOnSubmit(item);
                 db.SubmitChanges();
             }
-            DataService.Add(item);
+            DataItems.Add(item);
+            DataItems = DataItems;
+        }
+
+        public void DeleteItem(DataItem item)
+        {
+            using (var db = new ItemDataContext())
+            {
+                db.DataItems.DeleteOnSubmit(item);
+                db.SubmitChanges();
+            }
+            DataItems.Remove(item);
         }
 
         public MainViewModel()
         {
-            DataService = new ObservableCollection<DataItem>();   
+            DataItems = new ObservableCollection<DataItem>();   
         }
 
         ////public override void Cleanup()

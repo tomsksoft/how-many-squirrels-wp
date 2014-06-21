@@ -153,4 +153,10 @@
   <data name="ListPage" xml:space="preserve">
     <value>Список</value>
   </data>
+  <data name="ChangeParametr" xml:space="preserve">
+    <value>Введите параметр</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
 </root>

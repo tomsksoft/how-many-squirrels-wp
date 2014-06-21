@@ -40,14 +40,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
-        #region 
-
-        public void AddItem()
-        {
-            //ItemDataContext.GetDataContext().DataItems.InsertOnSubmit(new DataItem(Count, Date, Date));
-        }
-        
-        #endregion
         
     }
 }

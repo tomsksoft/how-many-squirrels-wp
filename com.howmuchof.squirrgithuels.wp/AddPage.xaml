@@ -128,9 +128,9 @@
             <tk:TimePicker x:Name="TimePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="70,0,0,0"/>
 
             <TextBlock Text="Количество" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" />
-            <Button Content="-" MaxWidth="70"  Grid.Row="2" Grid.Column="1" />
+            <Button Content="-" MaxWidth="70"  Grid.Row="2" Grid.Column="1" Click="Button_Click" />
             <TextBox InputScope="Number"       Grid.Row="2" Grid.Column="2" Name="Box" Text="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
-            <Button Content="+" MaxWidth="70"  Grid.Row="2" Grid.Column="3" />
+            <Button Content="+" MaxWidth="70"  Grid.Row="2" Grid.Column="3" Click="Plus_Click" />
 
             <!--<Button Content="Добавить" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3" Click="ButtonBase_OnClick"/>-->
 
