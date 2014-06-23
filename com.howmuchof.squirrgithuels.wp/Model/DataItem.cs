@@ -93,7 +93,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public override bool Equals(object obj)
         {
             var t = (DataItem) obj;
-            return Date == t.Date && Time == t.Time && Count == t.Count;
+            return _itemId == t._itemId;
         }
 
         #region INotifyPropertyChanged AND INotifyPropertyChanging MEMBERS

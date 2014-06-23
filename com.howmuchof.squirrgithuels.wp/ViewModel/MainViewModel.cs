@@ -1,5 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Data.Linq;
 using System.Linq;
+using System.Windows;
+using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
 
@@ -13,7 +17,9 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<DataItem> _dataItems;  
+        private ObservableCollection<DataItem> _dataItems;
+        private string _parametr;
+
         public ObservableCollection<DataItem> DataItems
         {
             get { return _dataItems; }
@@ -26,6 +32,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
+        
+
+        #region База данных 
+
         public void ReadDataFromDb()
         {
             using (var db = new ItemDataContext())
@@ -33,7 +43,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 var items = from DataItem item in db.DataItems select item;
                 DataItems = new ObservableCollection<DataItem>(items);
             }
-            
+
         }
 
         public void AddItem(DataItem item)
@@ -43,23 +53,49 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 db.DataItems.InsertOnSubmit(item);
                 db.SubmitChanges();
             }
-            DataItems.Add(item);
-            DataItems = DataItems;
+            var h = BinarySearch(item, 0, DataItems.Count);
+            DataItems.Insert(h, item);
         }
 
-        public void DeleteItem(DataItem item)
+        public void DeleteItem(DataItem item) 
         {
             using (var db = new ItemDataContext())
             {
-                db.DataItems.DeleteOnSubmit(item);
+                var tr = db.DataItems.First(x => x.ItemId == item.ItemId);
+                db.DataItems.DeleteOnSubmit(tr);
                 db.SubmitChanges();
             }
             DataItems.Remove(item);
         }
 
+        public void UpdateItem(DataItem item)
+        {
+            using (var db = new ItemDataContext())
+            {
+                //db.DataItems.FirstOrDefault(x => x.ItemId == item.ItemId);
+            }
+        }
+
+        private int BinarySearch(DataItem item, int left, int right)
+        {
+            int mid = left + (right - left) / 2;
+
+            if (right <= left) return mid;
+
+            if (item.Time > DataItems[mid].Time) return BinarySearch(item, left, mid);
+            
+            return BinarySearch(item, mid + 1, right);
+        }
+
+        #endregion
+
+
         public MainViewModel()
         {
-            DataItems = new ObservableCollection<DataItem>();   
+            DataItems = new ObservableCollection<DataItem>();
+            //var root = XElement.Load("/Resources/Settings.xml");
+            
+            //_parametr = root.Element("Parametr").Value;
         }
 
         ////public override void Cleanup()

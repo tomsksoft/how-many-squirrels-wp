@@ -29,14 +29,5 @@ namespace com.howmuchof.squirrgithuels.wp
                 NavigationService.GoBack();
         }
 
-        private void Plus_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            ((AddViewModel) DataContext).Count++;
-        }
-
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            ((AddViewModel)DataContext).Count--;
-        }
     }
 }

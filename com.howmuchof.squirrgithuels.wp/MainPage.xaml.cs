@@ -1,7 +1,6 @@
 ﻿using System;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
-using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using com.howmuchof.squirrgithuels.wp.Resources;
 
@@ -9,10 +8,11 @@ namespace com.howmuchof.squirrgithuels.wp
 {
     public partial class MainPage
     {
-        private ApplicationBarIconButton addButton;
-        private ApplicationBarIconButton selectButton;
-        private ApplicationBarIconButton deleteButton;
-        private ApplicationBarIconButton settingsButton;
+        private ApplicationBarIconButton _addButton;
+        private ApplicationBarIconButton _selectButton;
+        private ApplicationBarIconButton _deleteButton;
+        private ApplicationBarIconButton _settingsButton;
+        private ApplicationBarIconButton _cancelButton;
 
         // Constructor
         public MainPage()
@@ -24,39 +24,49 @@ namespace com.howmuchof.squirrgithuels.wp
 
         private void BuildLocalizedApplicationBar()
         {
-            ApplicationBar = new ApplicationBar();
+            ApplicationBar = new ApplicationBar {Opacity = 0.5};
 
-            // Create a new button and set the text value to the localized string from AppResources.
-            addButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/add.png", UriKind.Relative))
+            _addButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/add.png", UriKind.Relative))
             {
                 Text = AppResources.AppBarButtonText
             };
-            addButton.Click += AddButton_Click;
-            ApplicationBar.Buttons.Add(addButton);
+            _addButton.Click += AddButton_Click;
+            //ApplicationBar.Buttons.Add(_addButton);
 
-            selectButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/edit.png", UriKind.Relative))
+            _selectButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/edit.png", UriKind.Relative))
             {
                 Text = AppResources.AppBarButtonText
             };
-            selectButton.Click += SelectButtonOnClick;
+            _selectButton.Click += SelectButtonOnClick;
 
-            deleteButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/delete.png", UriKind.Relative))
+            _deleteButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/delete.png", UriKind.Relative))
             {
                 Text = AppResources.AppBarButtonText
             };
-            deleteButton.Click += DeleteButtonOnClick;
+            _deleteButton.Click += DeleteButtonOnClick;
 
-            settingsButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/feature.settings.png", UriKind.Relative))
+            _settingsButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/feature.settings.png", UriKind.Relative))
             {
                 Text = AppResources.Settings
             };
-            settingsButton.Click += SettingsButtonOnClick;
+            _settingsButton.Click += SettingsButtonOnClick;
 
+            _cancelButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/cancel.png", UriKind.Relative))
+            {
+                Text = AppResources.Cancel
+            };
+            _cancelButton.Click += CancelButtonOnClick;
+
+        }
+
+        private void CancelButtonOnClick(object sender, EventArgs eventArgs)
+        {
+            MultiSelector.EnforceIsSelectionEnabled = false;
         }
 
         private void SettingsButtonOnClick(object sender, EventArgs eventArgs)
         {
-            NavigationService.Navigate(new Uri("/Settings.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
         }
 
 
@@ -70,9 +80,9 @@ namespace com.howmuchof.squirrgithuels.wp
         private void Pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (pivot1.SelectedIndex == 1)
-                ViewButtons(addButton, selectButton, settingsButton);
+                ViewButtons(_addButton, _selectButton, _settingsButton);
             else
-                ViewButtons(addButton, settingsButton);
+                ViewButtons(_addButton, _settingsButton);
         }
 
 
@@ -96,9 +106,9 @@ namespace com.howmuchof.squirrgithuels.wp
         private void MultiSelector_IsSelectionEnabledChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
             if ((bool)e.NewValue)
-                ViewButtons(deleteButton);
+                ViewButtons(_deleteButton, _cancelButton);
             else
-                ViewButtons(addButton, selectButton, settingsButton);
+                ViewButtons(_addButton, _selectButton, _settingsButton);
         }
     }
 }

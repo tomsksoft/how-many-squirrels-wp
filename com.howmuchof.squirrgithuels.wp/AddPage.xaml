@@ -121,16 +121,16 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <tk:ToggleSwitch x:Name="Toggle1" Content="Выбрать свое время" Grid.Row="0" Grid.ColumnSpan="4"/>
+            <tk:ToggleSwitch x:Name="Toggle1" Content="Выбрать свое время" Grid.Row="0" Grid.ColumnSpan="4" IsChecked="{Binding IsSelfTime, Mode=TwoWay}"/>
 
             <TextBlock Text="Время добавления" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" />
-            <tk:DatePicker x:Name="DatePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-            <tk:TimePicker x:Name="TimePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="70,0,0,0"/>
+            <tk:DatePicker x:Name="DatePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="190" HorizontalAlignment="Left"/>
+            <tk:TimePicker x:Name="TimePicker" Value="{Binding Date, Mode=TwoWay}" IsEnabled="False" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="135,0,0,0" ValueStringFormat="{}{0:H:mm:ss}"/>
 
             <TextBlock Text="Количество" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" />
-            <Button Content="-" MaxWidth="70"  Grid.Row="2" Grid.Column="1" Click="Button_Click" />
+            <Button Content="-" MaxWidth="80"  Grid.Row="2" Grid.Column="1" Command="{Binding MinusCommand}" />
             <TextBox InputScope="Number"       Grid.Row="2" Grid.Column="2" Name="Box" Text="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
-            <Button Content="+" MaxWidth="70"  Grid.Row="2" Grid.Column="3" Click="Plus_Click" />
+            <Button Content="+" MaxWidth="80"  Grid.Row="2" Grid.Column="3" Command="{Binding PlusCommand}" />
 
             <!--<Button Content="Добавить" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3" Click="ButtonBase_OnClick"/>-->
 

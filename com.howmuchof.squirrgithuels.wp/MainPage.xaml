@@ -54,12 +54,12 @@
         <!--TitlePanel contains the name of the application and page title-->
 
         <phone:Pivot Name="pivot1" Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" 
-                     Grid.RowSpan="2" SelectionChanged="Pivot_SelectionChanged">
+                     Grid.RowSpan="2" SelectionChanged="Pivot_SelectionChanged" Margin="0,0,0,65">
 
             <phone:PivotItem Header="{Binding LocalizedResources.MainPage, Source={StaticResource LocalizedStrings}}" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ScrollViewer>
                     <StackPanel>
-                        <Image Source="/Assets/belka.png" Width="150" Margin="0,-9,0,0"/>
+                        <Image Source="/Assets/belka.png" Width="150" Margin="0,-5,0,0"/>
                         <TextBlock Text="{Binding LocalizedResources.AppDiscription, Source={StaticResource LocalizedStrings}}"
                                    Style="{StaticResource PhoneTextNormalStyle}"
                                    TextWrapping="Wrap"
@@ -115,6 +115,12 @@
                         </toolkit:LongListMultiSelector.ItemTemplate>
                     </toolkit:LongListMultiSelector>
                 </Grid>
+            </phone:PivotItem>
+            
+            <phone:PivotItem Header="{Binding Source={StaticResource LocalizedStrings}, Path=LocalizedResources.GraphPage}">
+                
+                
+                
             </phone:PivotItem>
             
         </phone:Pivot>

@@ -116,11 +116,29 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Отмена.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Введите параметр.
         /// </summary>
         public static string ChangeParametr {
             get {
                 return ResourceManager.GetString("ChangeParametr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на График.
+        /// </summary>
+        public static string GraphPage {
+            get {
+                return ResourceManager.GetString("GraphPage", resourceCulture);
             }
         }
         
