@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data.Linq;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml.Linq;
@@ -19,6 +20,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     {
         private ObservableCollection<DataItem> _dataItems;
         private string _parametr;
+        private bool _flag;
 
         public ObservableCollection<DataItem> DataItems
         {
@@ -31,12 +33,29 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("DataItems");
             }
         }
+        public string Parametr 
+        {
+            get { return _parametr; }
+            private set
+            {
+                if(value == _parametr)
+                    return;
 
-        
+                _parametr = value;
+
+                var doc = XDocument.Load("Settings.xml");
+                doc.Root.Element("param").SetValue(value);
+                doc.Save(new FileStream("Settings.xml", FileMode.Create));
+
+                _flag = true;
+
+                RaisePropertyChanged("Parametr");
+            }
+        }
 
         #region База данных 
 
-        public void ReadDataFromDb()
+        public void ReadDataFromDb()          
         {
             using (var db = new ItemDataContext())
             {
@@ -45,8 +64,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
 
         }
-
-        public void AddItem(DataItem item)
+        public void AddItem(DataItem item)    
         {
             using (var db = new ItemDataContext())
             {
@@ -56,7 +74,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             var h = BinarySearch(item, 0, DataItems.Count);
             DataItems.Insert(h, item);
         }
-
         public void DeleteItem(DataItem item) 
         {
             using (var db = new ItemDataContext())
@@ -67,12 +84,24 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
             DataItems.Remove(item);
         }
-
+        public void DeleteAll()
+        {
+            using (var db = new ItemDataContext())
+            {
+                db.DataItems.DeleteAllOnSubmit(db.DataItems);
+                db.SubmitChanges();
+            }
+            DataItems.Clear();
+        }
         public void UpdateItem(DataItem item)
         {
             using (var db = new ItemDataContext())
             {
-                //db.DataItems.FirstOrDefault(x => x.ItemId == item.ItemId);
+                var oldItem = db.DataItems.First(x => x.ItemId == item.ItemId);
+                oldItem.Count = item.Count;
+                oldItem.Date  = item.Date;
+                oldItem.Time  = item.Time;
+                db.SubmitChanges();
             }
         }
 
@@ -89,13 +118,13 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         #endregion
 
-
         public MainViewModel()
         {
             DataItems = new ObservableCollection<DataItem>();
-            //var root = XElement.Load("/Resources/Settings.xml");
-            
-            //_parametr = root.Element("Parametr").Value;
+
+            var document = XDocument.Load("Settings.xml");
+
+            _parametr = document.Root.Element("param").Value;
         }
 
         ////public override void Cleanup()

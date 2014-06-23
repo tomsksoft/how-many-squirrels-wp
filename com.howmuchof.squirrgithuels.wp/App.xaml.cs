@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using System.Xml.Linq;
 using com.howmuchof.squirrgithuels.wp.Model;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
@@ -57,12 +59,15 @@ namespace com.howmuchof.squirrgithuels.wp
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-
+            
             using (var db = new ItemDataContext())
                 if (!db.DatabaseExists())           //Если базы данных еще нет
                     db.CreateDatabase();            //создадим ее
 
             ViewModelLocator.Main.ReadDataFromDb();
+
+            
+
         }
 
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
+using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Controls;
 
 namespace com.howmuchof.squirrgithuels.wp
@@ -32,10 +34,13 @@ namespace com.howmuchof.squirrgithuels.wp
         //}
         private void Ok(object sender, EventArgs e)
         {
+            if(Box.Text == "") return;
+            
+            Box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+
             if (MessageBox.Show("Все существующие записи будут стерты", "Вы уверены?", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-            {
-                
-            }
+                ((MainViewModel) DataContext).DeleteAll();
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
         }

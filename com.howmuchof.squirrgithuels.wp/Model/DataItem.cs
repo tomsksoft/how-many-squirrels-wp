@@ -23,6 +23,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             Time = DateTime.Now;
         }
 
+
         private int _itemId;
         private int _count;
         private DateTime _date;
@@ -49,7 +50,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public int Count
         {
             get { return _count; }
-            private set
+            set
             {
                 if (_count != value)
                 {
@@ -63,7 +64,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public DateTime Date
         {
             get { return _date; }
-            private set
+            set
             {
                 if (_date == value) return;
                 NotifyPropertyChanging("Date");
@@ -75,7 +76,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public DateTime Time
         {
             get { return _time; }
-            private set
+            set
             {
                 if (_time != value)
                 {

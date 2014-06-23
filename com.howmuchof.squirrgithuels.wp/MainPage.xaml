@@ -19,7 +19,7 @@
 
     <phone:PhoneApplicationPage.Resources>
         <converters:TimeConverter x:Name="TimeConverter1" />
-        <converters:TimeConverter x:Name="DateConverter1" />
+        <converters:DateConverter x:Name="DateConverter1" />
     </phone:PhoneApplicationPage.Resources>
     
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -94,10 +94,12 @@
                     
                     <toolkit:LongListMultiSelector ItemsSource="{Binding DataItems}" Grid.ColumnSpan="2" Grid.Column="0"
                                                    Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                   Margin="0,20,0,0" Name="MultiSelector" IsSelectionEnabledChanged="MultiSelector_IsSelectionEnabledChanged">
+                                                   Margin="0,20,0,0" Name="MultiSelector" 
+                                                   IsSelectionEnabledChanged="MultiSelector_IsSelectionEnabledChanged"
+                                                   toolkit:TiltEffect.IsTiltEnabled="True">
                         <toolkit:LongListMultiSelector.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,0,0,10">
+                                <Grid Margin="0,0,0,10" Tap="OnTap">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition />
@@ -107,9 +109,9 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
                                     
-                                <TextBlock Text="{Binding Date, Converter={StaticResource TimeConverter1}}" Grid.Row="0" Grid.Column="0" FontSize="40" HorizontalAlignment="Left"   Margin="0,-15,0,0" />
-                                <TextBlock Text="{Binding Time, Converter={StaticResource DateConverter1}}" Grid.Row="1" Grid.Column="0"               HorizontalAlignment="Left"   Margin="0,-15,0,0"  />
-                                <TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="0,-10,0,0"/>
+                                <TextBlock Text="{Binding Time, Converter={StaticResource TimeConverter1}}" Grid.Row="0" Grid.Column="0" FontSize="40" HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
+                                <TextBlock Text="{Binding Date, Converter={StaticResource DateConverter1}}" Grid.Row="1" Grid.Column="0"               HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
+                                <TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="-50,-10,0,0" />
                                 </Grid>
                             </DataTemplate>
                         </toolkit:LongListMultiSelector.ItemTemplate>

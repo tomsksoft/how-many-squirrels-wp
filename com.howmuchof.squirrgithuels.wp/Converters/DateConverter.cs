@@ -8,7 +8,7 @@ namespace com.howmuchof.squirrgithuels.wp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((DateTime) value).ToShortDateString();
+            return ((DateTime) value).ToLongDateString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -46,7 +46,7 @@
         <StackPanel x:Name="TitlePanel"
                     Grid.Row="0"
                     Margin="12,17,0,28">
-            <TextBlock Text="MY APPLICATION"
+            <TextBlock Text="{Binding Source={StaticResource LocalizedStrings}, Path=LocalizedResources.ApplicationTitle}"
                        Style="{StaticResource PhoneTextNormalStyle}"
                        Margin="12,0" />
             <TextBlock Text="{Binding Path=LocalizedResources.Settings,Source={StaticResource LocalizedStrings}}"
@@ -64,7 +64,7 @@
             </Grid.RowDefinitions>
             
             <TextBlock Text="{Binding Path=LocalizedResources.ChangeParametr, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding LocalizedResources.Parametr, Source={StaticResource LocalizedStrings}}" Grid.Row="1"/>
+            <TextBox Name="Box" Text="{Binding Parametr, Mode=TwoWay}" Grid.Row="1"/>
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are

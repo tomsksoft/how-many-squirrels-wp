@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Windows.Controls;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Shell;
 using com.howmuchof.squirrgithuels.wp.Resources;
+using GestureEventArgs = System.Windows.Input.GestureEventArgs;
 
 namespace com.howmuchof.squirrgithuels.wp
 {
@@ -20,6 +22,7 @@ namespace com.howmuchof.squirrgithuels.wp
             InitializeComponent();
 
             BuildLocalizedApplicationBar();
+            
         }
 
         private void BuildLocalizedApplicationBar()
@@ -33,7 +36,7 @@ namespace com.howmuchof.squirrgithuels.wp
             _addButton.Click += AddButton_Click;
             //ApplicationBar.Buttons.Add(_addButton);
 
-            _selectButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/edit.png", UriKind.Relative))
+            _selectButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/ApplicationBar.Select.png", UriKind.Relative))
             {
                 Text = AppResources.AppBarButtonText
             };
@@ -61,6 +64,7 @@ namespace com.howmuchof.squirrgithuels.wp
 
         private void CancelButtonOnClick(object sender, EventArgs eventArgs)
         {
+            if(MultiSelector.SelectedItems.Count > 0) MultiSelector.SelectedItems.Clear();
             MultiSelector.EnforceIsSelectionEnabled = false;
         }
 
@@ -110,5 +114,11 @@ namespace com.howmuchof.squirrgithuels.wp
             else
                 ViewButtons(_addButton, _selectButton, _settingsButton);
         }
+        
+        private void OnTap(object sender, GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Addpage.xaml", UriKind.Relative));
+        }
+
     }
 }
