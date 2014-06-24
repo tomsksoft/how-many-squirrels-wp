@@ -66,7 +66,7 @@
                                    TextWrapping="Wrap"
                                    FontSize="20"/>
 
-                        <Button Content="{Binding LocalizedResources.NewParametrs, Source={StaticResource LocalizedStrings}}" />
+                        <Button Content="{Binding LocalizedResources.NewParametrs, Source={StaticResource LocalizedStrings}}" Visibility="{Binding Flag}" />
 
                         <Button Content="{Binding LocalizedResources.AppBarButtonText, Source={StaticResource LocalizedStrings}}" Click="AddButton_Click"/>
                         <Button Content="{Binding LocalizedResources.AppGraphText, Source={StaticResource LocalizedStrings}}" />
@@ -128,14 +128,15 @@
                         <sparrow:DateTimeXAxis StringFormat="HH:mm" />
                     </sparrow:SparrowChart.XAxis>
                     <sparrow:SparrowChart.YAxis>
-                        <sparrow:LinearYAxis />
+                        <sparrow:LinearYAxis Interval="1"/>
                     </sparrow:SparrowChart.YAxis>
 
                     <sparrow:AreaSeries PointsSource="{Binding DataItems}"
-                                    StrokeThickness="1"
-                                    Stroke="CadetBlue"
-                                    XPath="Time"
-                                    YPath="Count" />
+                                        StrokeThickness="1"
+                                        Stroke="CadetBlue"
+                                        XPath="Time"
+                                        YPath="Count"/>
+                    
                 </sparrow:SparrowChart>
                 
             </phone:PivotItem>

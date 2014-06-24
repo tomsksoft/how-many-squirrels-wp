@@ -20,7 +20,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     {
         private ObservableCollection<DataItem> _dataItems;
         private string _parametr;
-        private bool _flag;
+        private string _lastActiveTab;
+        private bool   _flag;
 
         public ObservableCollection<DataItem> DataItems
         {
@@ -43,13 +44,31 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
                 _parametr = value;
 
-                var doc = XDocument.Load("Settings.xml");
-                doc.Root.Element("param").SetValue(value);
-                doc.Save(new FileStream("Settings.xml", FileMode.Create));
+                var fileStream = new FileStream("Settings.xml", FileMode.Create);
 
-                _flag = true;
+                var doc = new XDocument(new XElement("settings",
+                    new XElement("param", _parametr),
+                    new XElement("lastTab", _lastActiveTab)));
+                doc.Save(fileStream);
+                fileStream.Close();
+
+                Flag = true;
 
                 RaisePropertyChanged("Parametr");
+            }
+        }
+        public bool Flag
+        {
+            get
+            {
+                return _flag;
+            }
+            set
+            {
+                if(value == _flag)return;
+
+                _flag = value;
+                RaisePropertyChanged("Flag");
             }
         }
 
@@ -84,7 +103,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
             DataItems.Remove(item);
         }
-        public void DeleteAll()
+        public void DeleteAll()               
         {
             using (var db = new ItemDataContext())
             {
@@ -109,7 +128,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             first.Date = date;
             first.Time = time;
         }
-
         private int BinarySearch(DataItem item, int left, int right)
         {
             int mid = left + (right - left) / 2;
@@ -127,9 +145,18 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         {
             DataItems = new ObservableCollection<DataItem>();
 
-            var document = XDocument.Load("Settings.xml");
+            if (File.Exists("Settings.xml"))
+            {
+                var document = XDocument.Load("Settings.xml");
+                _parametr = document.Root.Element("param").Value;
+                _lastActiveTab = document.Root.Element("lastTab").Value;
+            }
+            else
+            {
+                _parametr = "Белка";
+                _lastActiveTab = "default";
+            }
 
-            _parametr = document.Root.Element("param").Value;
         }
 
         ////public override void Cleanup()
