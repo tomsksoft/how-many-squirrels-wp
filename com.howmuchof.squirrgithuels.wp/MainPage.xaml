@@ -7,6 +7,7 @@
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:ignore="http://www.ignore.com"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:sparrow="clr-namespace:Sparrow.Chart;assembly=Sparrow.Chart.WP8.45"
                             xmlns:converters="clr-namespace:com.howmuchof.squirrgithuels.wp.Converters"
                             mc:Ignorable="d ignore"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -15,7 +16,7 @@
                             SupportedOrientations="PortraitOrLandscape"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
-                            DataContext="{Binding Main, Source={StaticResource Locator}}">
+                            DataContext="{Binding Main, Source={StaticResource Locator}}" BackKeyPress="PhoneApplicationPage_BackKeyPress">
 
     <phone:PhoneApplicationPage.Resources>
         <converters:TimeConverter x:Name="TimeConverter1" />
@@ -108,10 +109,11 @@
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    
-                                <TextBlock Text="{Binding Time, Converter={StaticResource TimeConverter1}}" Grid.Row="0" Grid.Column="0" FontSize="40" HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
-                                <TextBlock Text="{Binding Date, Converter={StaticResource DateConverter1}}" Grid.Row="1" Grid.Column="0"               HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
-                                <TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="-50,-10,0,0" />
+
+                                    <TextBlock Text="{Binding ItemId}" Visibility="Collapsed"></TextBlock>
+                                    <TextBlock Text="{Binding Time, Converter={StaticResource TimeConverter1}}" Grid.Row="0" Grid.Column="0" FontSize="40" HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
+                                    <TextBlock Text="{Binding Date, Converter={StaticResource DateConverter1}}" Grid.Row="1" Grid.Column="0"               HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
+                                    <TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="-50,-10,0,0" />
                                 </Grid>
                             </DataTemplate>
                         </toolkit:LongListMultiSelector.ItemTemplate>
@@ -121,7 +123,20 @@
             
             <phone:PivotItem Header="{Binding Source={StaticResource LocalizedStrings}, Path=LocalizedResources.GraphPage}">
                 
-                
+                <sparrow:SparrowChart >
+                    <sparrow:SparrowChart.XAxis>
+                        <sparrow:DateTimeXAxis StringFormat="HH:mm" />
+                    </sparrow:SparrowChart.XAxis>
+                    <sparrow:SparrowChart.YAxis>
+                        <sparrow:LinearYAxis />
+                    </sparrow:SparrowChart.YAxis>
+
+                    <sparrow:AreaSeries PointsSource="{Binding DataItems}"
+                                    StrokeThickness="1"
+                                    Stroke="CadetBlue"
+                                    XPath="Time"
+                                    YPath="Count" />
+                </sparrow:SparrowChart>
                 
             </phone:PivotItem>
             

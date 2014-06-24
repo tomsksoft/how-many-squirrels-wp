@@ -29,7 +29,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             {
                 if(_dataItems == value) return;
 ;
-                _dataItems = new ObservableCollection<DataItem>(value.OrderByDescending(x => x.Date));
+                _dataItems = new ObservableCollection<DataItem>(value.OrderByDescending(x => x.Time));
                 RaisePropertyChanged("DataItems");
             }
         }
@@ -93,16 +93,21 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
             DataItems.Clear();
         }
-        public void UpdateItem(DataItem item)
+        public void UpdateItem(DataItem item, int count, DateTime date, DateTime time)
         {
             using (var db = new ItemDataContext())
             {
                 var oldItem = db.DataItems.First(x => x.ItemId == item.ItemId);
-                oldItem.Count = item.Count;
-                oldItem.Date  = item.Date;
-                oldItem.Time  = item.Time;
+                oldItem.Count = count;
+                oldItem.Date  = date;
+                oldItem.Time  = time;
                 db.SubmitChanges();
             }
+
+            var first = DataItems.First(x => x.ItemId == item.ItemId);
+            first.Count = count;
+            first.Date = date;
+            first.Time = time;
         }
 
         private int BinarySearch(DataItem item, int left, int right)

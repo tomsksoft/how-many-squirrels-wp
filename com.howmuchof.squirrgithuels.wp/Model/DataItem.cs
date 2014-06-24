@@ -18,9 +18,9 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 
         public DataItem()
         {
-            Count = 0;
-            Date = DateTime.Now;
-            Time = DateTime.Now;
+            Count = 1;
+            Date  = DateTime.Now;
+            Time  = DateTime.Now;
         }
 
 

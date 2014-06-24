@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
@@ -65,7 +66,7 @@ namespace com.howmuchof.squirrgithuels.wp
         private void CancelButtonOnClick(object sender, EventArgs eventArgs)
         {
             if(MultiSelector.SelectedItems.Count > 0) MultiSelector.SelectedItems.Clear();
-            MultiSelector.EnforceIsSelectionEnabled = false;
+            MultiSelector.IsSelectionEnabled = false;
         }
 
         private void SettingsButtonOnClick(object sender, EventArgs eventArgs)
@@ -104,7 +105,7 @@ namespace com.howmuchof.squirrgithuels.wp
             while(MultiSelector.SelectedItems.Count > 0)
                 ViewModelLocator.Main.DeleteItem((DataItem) MultiSelector.SelectedItems[0]);
 
-            MultiSelector.EnforceIsSelectionEnabled = false;
+            MultiSelector.IsSelectionEnabled = false;
         }
 
         private void MultiSelector_IsSelectionEnabledChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -117,7 +118,17 @@ namespace com.howmuchof.squirrgithuels.wp
         
         private void OnTap(object sender, GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/Addpage.xaml", UriKind.Relative));
+            var block = (TextBlock)((Grid)sender).Children[0];
+            using (var db = new ItemDataContext())
+                NavigationService.Navigate(new Uri("/AddPage.xaml?Item=" + block.Text, UriKind.Relative));
+        }
+
+        private void PhoneApplicationPage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!MultiSelector.IsSelectionEnabled) return;
+
+            MultiSelector.IsSelectionEnabled = false;
+            e.Cancel = true;
         }
 
     }
