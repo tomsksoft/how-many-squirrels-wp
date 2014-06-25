@@ -1,13 +1,15 @@
 ﻿/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocatorTemplate xmlns:vm="clr-namespace:com.howmuchof.squirrgithuels.wp.ViewModel"
-                                   x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-*/
+ * How many squirrels: tool for young naturalist
+ *
+ * This application is created within the internship
+ * in the Education Department of Tomsksoft, http://tomsksoft.com
+ * Idea and leading: Sergei Borisov
+ *
+ * This software is licensed under a GPL v3
+ * http://www.gnu.org/licenses/gpl.txt
+ *
+ * Created by Nadyrshin Stanislav on 18.04.2014
+ */
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;

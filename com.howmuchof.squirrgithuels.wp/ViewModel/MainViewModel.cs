@@ -1,9 +1,20 @@
-﻿using System;
+﻿/*
+ * How many squirrels: tool for young naturalist
+ *
+ * This application is created within the internship
+ * in the Education Department of Tomsksoft, http://tomsksoft.com
+ * Idea and leading: Sergei Borisov
+ *
+ * This software is licensed under a GPL v3
+ * http://www.gnu.org/licenses/gpl.txt
+ *
+ * Created by Nadyrshin Stanislav on 18.04.2014
+ */
+
+using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
@@ -45,7 +56,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 _parametr = value;
 
                 var fileStream = new FileStream("Settings.xml", FileMode.Create);
-
                 var doc = new XDocument(new XElement("settings",
                     new XElement("param", _parametr),
                     new XElement("lastTab", _lastActiveTab)));
@@ -70,7 +80,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 _flag = value;
                 RaisePropertyChanged("Flag");
             }
-        }
+        }    //////////////////////TODO доделать эту ерунду
 
         #region База данных 
 
