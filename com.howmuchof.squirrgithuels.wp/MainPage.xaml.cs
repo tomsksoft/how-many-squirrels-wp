@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
@@ -35,12 +36,13 @@ namespace com.howmuchof.squirrgithuels.wp
             InitializeComponent();
 
             BuildLocalizedApplicationBar();
-            
+
+            pivot1.SelectedIndex = (int)((MainViewModel) DataContext).LastActiveTab;
         }
 
         private void BuildLocalizedApplicationBar()
         {
-            ApplicationBar = new ApplicationBar {Opacity = 0.5};
+            ApplicationBar = new ApplicationBar();// {Opacity = 0.5};
 
             _addButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/add.png", UriKind.Relative))
             {
@@ -100,6 +102,7 @@ namespace com.howmuchof.squirrgithuels.wp
                 ViewButtons(_addButton, _selectButton, _settingsButton);
             else
                 ViewButtons(_addButton, _settingsButton);
+            ((MainViewModel) DataContext).LastActiveTab = (Tab)pivot1.SelectedIndex;
         }
 
 
@@ -143,5 +146,9 @@ namespace com.howmuchof.squirrgithuels.wp
             e.Cancel = true;
         }
 
+        private void GraphButton(object sender, RoutedEventArgs e)
+        {
+            pivot1.SelectedIndex = 2;
+        }
     }
 }

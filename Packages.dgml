@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="com.howmuchof.squirrgithuels.wp" Label="com.howmuchof.squirrgithuels.wp" Category="Проект" />
+    <Node Id="EntityFramework 6.1.0" Label="EntityFramework 6.1.0" Category="Пакет" />
+    <Node Id="EntityFramework.ru 6.1.0" Label="EntityFramework.ru 6.1.0" Category="Пакет" />
+    <Node Id="MvvmLightLibs 4.2.30.0" Label="MvvmLightLibs 4.2.30.0" Category="Пакет" />
+    <Node Id="SilverlightToolkitWP 4.2012.6.25" Label="SilverlightToolkitWP 4.2012.6.25" Category="Пакет" />
+    <Node Id="Sparrow.Chart.WP8 13.1.0.113" Label="Sparrow.Chart.WP8 13.1.0.113" Category="Пакет" />
+    <Node Id="UI.for.WindowsPhone.8 2014.2.0617" Label="UI.for.WindowsPhone.8 2014.2.0617" Category="Пакет" />
+    <Node Id="WPtoolkit 4.2013.08.16" Label="WPtoolkit 4.2013.08.16" Category="Пакет" />
+  </Nodes>
+  <Links>
+    <Link Source="EntityFramework.ru 6.1.0" Target="EntityFramework 6.1.0" Category="Зависимость пакета" />
+    <Link Source="com.howmuchof.squirrgithuels.wp" Target="EntityFramework.ru 6.1.0" Category="Установленный пакет" />
+    <Link Source="com.howmuchof.squirrgithuels.wp" Target="MvvmLightLibs 4.2.30.0" Category="Установленный пакет" />
+    <Link Source="com.howmuchof.squirrgithuels.wp" Target="SilverlightToolkitWP 4.2012.6.25" Category="Установленный пакет" />
+    <Link Source="com.howmuchof.squirrgithuels.wp" Target="Sparrow.Chart.WP8 13.1.0.113" Category="Установленный пакет" />
+    <Link Source="com.howmuchof.squirrgithuels.wp" Target="UI.for.WindowsPhone.8 2014.2.0617" Category="Установленный пакет" />
+    <Link Source="com.howmuchof.squirrgithuels.wp" Target="WPtoolkit 4.2013.08.16" Category="Установленный пакет" />
+  </Links>
+  <Categories>
+    <Category Id="Проект" />
+    <Category Id="Пакет" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Проект" ValueLabel="True">
+      <Condition Expression="HasCategory('Проект')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Зависимость пакета" ValueLabel="True">
+      <Condition Expression="HasCategory('Зависимость пакета')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>

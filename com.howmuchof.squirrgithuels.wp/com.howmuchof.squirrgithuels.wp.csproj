@@ -99,6 +99,8 @@
     </Compile>
     <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\TimeConverter.cs" />
+    <Compile Include="Model\AppInfo.cs" />
+    <Compile Include="Model\AppInfoContext.cs" />
     <Compile Include="Model\ItemDataContext.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">

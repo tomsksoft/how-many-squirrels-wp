@@ -76,6 +76,15 @@ namespace com.howmuchof.squirrgithuels.wp
                 if (!db.DatabaseExists())           //Если базы данных еще нет
                     db.CreateDatabase();            //создадим ее
 
+            using(var db = new AppInfoContext())
+                if (!db.DatabaseExists())
+                {
+                    db.CreateDatabase();
+                    db.AppInfo.InsertOnSubmit(new AppInfo());
+                    db.SubmitChanges();
+                }
+
+            ViewModelLocator.Main.ReadSettings();
             ViewModelLocator.Main.ReadDataFromDb();
 
             if (!File.Exists("Settings.xml"))

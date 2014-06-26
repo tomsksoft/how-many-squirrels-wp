@@ -13,8 +13,10 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
@@ -31,57 +33,117 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     {
         private ObservableCollection<DataItem> _dataItems;
         private string _parametr;
-        private string _lastActiveTab;
-        private bool   _flag;
+        private Tab _lastActiveTab;
+        private Visibility   _flag;
 
-        public ObservableCollection<DataItem> DataItems
+        public MainViewModel()
+        {
+            DataItems = new ObservableCollection<DataItem>();
+
+            //if (File.Exists("Settings.xml"))
+            //{
+            //    var document = XDocument.Load("Settings.xml");
+            //    _parametr = document.Root.Element("param").Value;
+            //    _lastActiveTab = document.Root.Element("lastTab").Value;
+            //}
+            //else
+            //{
+            //    _parametr = "Белка";
+            //    _lastActiveTab = "default";
+            //}
+
+        }
+
+
+        #region Properties
+
+        public ObservableCollection<DataItem> DataItems  
         {
             get { return _dataItems; }
             private set
             {
-                if(_dataItems == value) return;
-;
+                if (_dataItems == value) return;
+                ;
                 _dataItems = new ObservableCollection<DataItem>(value.OrderByDescending(x => x.Time));
                 RaisePropertyChanged("DataItems");
+                RaisePropertyChanged("GroupItems");
             }
         }
-        public string Parametr 
+
+        public ObservableCollection<DataItem> GroupItems 
+        {
+            get
+            {
+                if (!DataItems.Any()) return null;
+                var items = new ObservableCollection<DataItem>();
+                var count = 0;
+                var sum = 0;
+                var date = DataItems[0].Date;
+
+                foreach (var item in DataItems)
+                {
+                    if (item.Date.ToShortDateString() != date.ToShortDateString())
+                    {
+                        items.Add(new DataItem(sum/count, new DateTime(date.Year, date.Month, date.Day, 0, 0, 0), date));
+                        sum = 0;
+                        count = 0;
+                        date = item.Date;
+                    }
+                    count++;
+                    sum += item.Count;
+                }
+                items.Add(new DataItem(sum/count, new DateTime(date.Year, date.Month, date.Day, 0, 0, 0), date));
+
+                return items;
+            }
+        }
+
+        public string Parametr   
         {
             get { return _parametr; }
             private set
             {
-                if(value == _parametr)
+                if (value == _parametr)
                     return;
 
                 _parametr = value;
 
-                var fileStream = new FileStream("Settings.xml", FileMode.Create);
-                var doc = new XDocument(new XElement("settings",
-                    new XElement("param", _parametr),
-                    new XElement("lastTab", _lastActiveTab)));
-                doc.Save(fileStream);
-                fileStream.Close();
+                ChangeParametr(value);
 
-                Flag = true;
+                Flag = Visibility.Collapsed;
 
                 RaisePropertyChanged("Parametr");
             }
         }
-        public bool Flag
+
+        public Visibility Flag   
         {
-            get
-            {
-                return _flag;
-            }
+            get { return _parametr != "Белка" ? Visibility.Collapsed : _flag; }
             set
             {
-                if(value == _flag)return;
+                if (value == _flag) return;
 
                 _flag = value;
                 RaisePropertyChanged("Flag");
             }
-        }    //////////////////////TODO доделать эту ерунду
+        }
 
+        public Tab LastActiveTab 
+        {
+            get { return _lastActiveTab; }
+            set
+            {
+                if(value == _lastActiveTab) return;
+
+                ChangeLastTab(value);
+
+                _lastActiveTab = value;
+                RaisePropertyChanged("LastActiveTab");
+            }
+        }
+
+        #endregion
+        
         #region База данных 
 
         public void ReadDataFromDb()          
@@ -93,6 +155,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
 
         }
+        
         public void AddItem(DataItem item)    
         {
             using (var db = new ItemDataContext())
@@ -102,6 +165,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
             var h = BinarySearch(item, 0, DataItems.Count);
             DataItems.Insert(h, item);
+            RaisePropertyChanged("GroupItems");
         }
         public void DeleteItem(DataItem item) 
         {
@@ -112,6 +176,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 db.SubmitChanges();
             }
             DataItems.Remove(item);
+            RaisePropertyChanged("GroupItems");
         }
         public void DeleteAll()               
         {
@@ -121,6 +186,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 db.SubmitChanges();
             }
             DataItems.Clear();
+            RaisePropertyChanged("GroupItems");
         }
         public void UpdateItem(DataItem item, int count, DateTime date, DateTime time)
         {
@@ -137,6 +203,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             first.Count = count;
             first.Date = date;
             first.Time = time;
+            RaisePropertyChanged("GroupItems");
         }
         private int BinarySearch(DataItem item, int left, int right)
         {
@@ -151,23 +218,42 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         #endregion
 
-        public MainViewModel()
+        #region SettingsDataBase
+
+        public void ReadSettings()
         {
-            DataItems = new ObservableCollection<DataItem>();
-
-            if (File.Exists("Settings.xml"))
+            using (var db = new AppInfoContext())
             {
-                var document = XDocument.Load("Settings.xml");
-                _parametr = document.Root.Element("param").Value;
-                _lastActiveTab = document.Root.Element("lastTab").Value;
-            }
-            else
-            {
-                _parametr = "Белка";
-                _lastActiveTab = "default";
-            }
+                var appInfo = (from AppInfo app in db.AppInfo select app).ToArray()[0];
 
+                _parametr = appInfo.Parametr;
+                _lastActiveTab = appInfo.LastTab;
+            }
         }
+
+        private void ChangeParametr(string parametr)
+        {
+            using (var db = new AppInfoContext())
+            {
+                var appInfo = db.AppInfo.ToArray()[0];
+
+                appInfo.Parametr = parametr;
+                db.SubmitChanges();
+            }
+        }
+
+        private void ChangeLastTab(Tab tab)
+        {
+            using (var db = new AppInfoContext())
+            {
+                var appInfo = db.AppInfo.ToArray()[0];
+
+                appInfo.LastTab = tab;
+                db.SubmitChanges();
+            }
+        }
+
+        #endregion
 
         ////public override void Cleanup()
         ////{
