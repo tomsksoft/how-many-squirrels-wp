@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,7 @@ using System.Windows;
 using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
+using Microsoft.Phone.Controls;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {
@@ -35,25 +37,13 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         private string _parametr;
         private Tab _lastActiveTab;
         private Visibility   _flag;
+        private DateTime _minTime;
+        private DateTime _maxTime;
 
         public MainViewModel()
         {
             DataItems = new ObservableCollection<DataItem>();
-
-            //if (File.Exists("Settings.xml"))
-            //{
-            //    var document = XDocument.Load("Settings.xml");
-            //    _parametr = document.Root.Element("param").Value;
-            //    _lastActiveTab = document.Root.Element("lastTab").Value;
-            //}
-            //else
-            //{
-            //    _parametr = "Белка";
-            //    _lastActiveTab = "default";
-            //}
-
         }
-
 
         #region Properties
 
@@ -78,9 +68,11 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 var items = new ObservableCollection<DataItem>();
                 var count = 0;
                 var sum = 0;
-                var date = DataItems[0].Date;
+                var tmp = DataItems.Where(x => x.Date >= MinTime && x.Date <= MaxTime).ToArray();
+                if(!tmp.Any()) return null;
+                var date = tmp.First().Date;  
 
-                foreach (var item in DataItems)
+                foreach (var item in tmp)
                 {
                     if (item.Date.ToShortDateString() != date.ToShortDateString())
                     {
@@ -142,6 +134,37 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
+        public DateTime MinTime  
+        {
+            get { return _minTime; }
+            set
+            {
+                if(value == _minTime)return;
+
+                _minTime = value;
+                RaisePropertyChanged("MinTime");
+                RaisePropertyChanged("Minlol");
+                RaisePropertyChanged("GroupItems");
+            }
+        }
+
+        public DateTime MaxTime  
+        {
+            get { return _maxTime; }
+            set
+            {
+                if(value == _maxTime) return;
+
+                _maxTime = value;
+                RaisePropertyChanged("MaxTime");
+                RaisePropertyChanged("Maxlol");
+                RaisePropertyChanged("GroupItems");
+            }
+        }
+
+        public double Maxlol { get { return new DateTime(_maxTime.Year, _maxTime.Month, _maxTime.Day, 0, 0, 0, 0).ToOADate(); } }
+
+        public double Minlol { get { return new DateTime(_minTime.Year, _minTime.Month, _minTime.Day, 0, 0, 0, 0).ToOADate(); } }
         #endregion
         
         #region База данных 
@@ -154,6 +177,15 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 DataItems = new ObservableCollection<DataItem>(items);
             }
 
+            DataItems.CollectionChanged += delegate
+            {
+                MaxTime = _dataItems.Max(x => x.Date);
+                MinTime = MaxTime - new TimeSpan(5, 00, 00, 00);
+                RaisePropertyChanged("GroupItems");
+            };
+
+            MaxTime = _dataItems.Max(x => x.Date);
+            MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
         }
         
         public void AddItem(DataItem item)    
@@ -224,7 +256,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         {
             using (var db = new AppInfoContext())
             {
-                var appInfo = (from AppInfo app in db.AppInfo select app).ToArray()[0];
+                var appInfo = (from AppInfo app in db.AppInfo select app).First();
 
                 _parametr = appInfo.Parametr;
                 _lastActiveTab = appInfo.LastTab;

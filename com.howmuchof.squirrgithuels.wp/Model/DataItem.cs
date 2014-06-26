@@ -81,7 +81,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             {
                 if (_date == value) return;
                 NotifyPropertyChanging("Date");
-                _date = value;
+                _date = new DateTime(value.Year, value.Month, value.Day, 0, 0, 0);
                 NotifyPropertyChanged("Date");
             }
         }
@@ -108,6 +108,11 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         {
             var t = (DataItem) obj;
             return _itemId == t._itemId;
+        }
+
+        public override string ToString()
+        {
+            return "{" + Count + " -> " + Date.ToLongDateString() + " / " + Time.ToLongTimeString() + "}"; 
         }
 
         #region INotifyPropertyChanged AND INotifyPropertyChanging MEMBERS

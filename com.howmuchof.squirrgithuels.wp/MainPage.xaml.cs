@@ -38,6 +38,7 @@ namespace com.howmuchof.squirrgithuels.wp
             BuildLocalizedApplicationBar();
 
             pivot1.SelectedIndex = (int)((MainViewModel) DataContext).LastActiveTab;
+            
         }
 
         private void BuildLocalizedApplicationBar()

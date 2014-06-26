@@ -157,22 +157,42 @@
                     </chart:RadCartesianChart.Series>
                     
                 </chart:RadCartesianChart>-->
-                <sparrow:SparrowChart >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{Binding Source={StaticResource LocalizedStrings}, Path=LocalizedResources.TimeInteravl}"
+                               Grid.ColumnSpan="2"/>
+                    <toolkit:DatePicker Grid.Row="1" Grid.Column="0"
+                                        Value="{Binding MinTime, Mode=TwoWay}"/>
+                    <toolkit:DatePicker Grid.Row="1" Grid.Column="1"
+                                        Value="{Binding MaxTime}"/>
+
+                    <sparrow:SparrowChart Name="Chart" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
                     <sparrow:SparrowChart.XAxis>
-                        <sparrow:DateTimeXAxis StringFormat="dd:MM" Interval="1.00:00:00" />
+                        <sparrow:DateTimeXAxis 
+                                               ShowCrossLines="False"/>
                     </sparrow:SparrowChart.XAxis>
+                        
                     <sparrow:SparrowChart.YAxis>
                         <sparrow:LinearYAxis Interval="1"/>
                     </sparrow:SparrowChart.YAxis>
 
-                    <sparrow:ColumnSeries PointsSource="{Binding GroupItems}"
-                                        StrokeThickness="1"
-                                        Stroke="{StaticResource PhoneForegroundBrush}"
-                                        XPath="Date"
-                                        YPath="Count"/>
-                    
-                </sparrow:SparrowChart>
-                
+                        <sparrow:ColumnSeries PointsSource="{Binding GroupItems}"
+                                                StrokeThickness="1"
+                                                Stroke="{StaticResource PhoneForegroundBrush}"
+                                                XPath="Date"
+                                                YPath="Count" />
+
+                    </sparrow:SparrowChart>
+                </Grid>
             </phone:PivotItem>
             
         </phone:Pivot>

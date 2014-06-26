@@ -195,5 +195,14 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
                 return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Временной интервал.
+        /// </summary>
+        public static string TimeInteravl {
+            get {
+                return ResourceManager.GetString("TimeInteravl", resourceCulture);
+            }
+        }
     }
 }

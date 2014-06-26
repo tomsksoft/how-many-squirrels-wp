@@ -165,4 +165,7 @@
   <data name="GraphPage" xml:space="preserve">
     <value>График</value>
   </data>
+  <data name="TimeInteravl" xml:space="preserve">
+    <value>Временной интервал</value>
+  </data>
 </root>
