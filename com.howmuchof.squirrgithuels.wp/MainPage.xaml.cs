@@ -14,10 +14,12 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Shell;
 using com.howmuchof.squirrgithuels.wp.Resources;
+using Sparrow.Chart;
 using GestureEventArgs = System.Windows.Input.GestureEventArgs;
 
 namespace com.howmuchof.squirrgithuels.wp
@@ -29,6 +31,7 @@ namespace com.howmuchof.squirrgithuels.wp
         private ApplicationBarIconButton _deleteButton;
         private ApplicationBarIconButton _settingsButton;
         private ApplicationBarIconButton _cancelButton;
+        private ApplicationBarIconButton _graphButton;
 
         // Constructor
         public MainPage()
@@ -50,7 +53,6 @@ namespace com.howmuchof.squirrgithuels.wp
                 Text = AppResources.AppBarButtonText
             };
             _addButton.Click += AddButton_Click;
-            //ApplicationBar.Buttons.Add(_addButton);
 
             _selectButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/ApplicationBar.Select.png", UriKind.Relative))
             {
@@ -76,6 +78,27 @@ namespace com.howmuchof.squirrgithuels.wp
             };
             _cancelButton.Click += CancelButtonOnClick;
 
+            _graphButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/refresh.png", UriKind.Relative))
+            {
+                Text = AppResources.GraphView
+            };
+            _graphButton.Click += GraphButtonOnClick;
+        }
+
+        private void GraphButtonOnClick(object sender, EventArgs eventArgs)
+        {
+            //if (ColumnSeries.Visibility == Visibility.Collapsed)
+            //{
+            //    ColumnSeries.Visibility = Visibility.Visible;
+            //    LineSeries.Visibility = Visibility.Collapsed;
+            //    ScatterSeries.Visibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    ColumnSeries.Visibility = Visibility.Collapsed;
+            //    LineSeries.Visibility = Visibility.Visible;
+            //    ScatterSeries.Visibility = Visibility.Visible;
+            //}
         }
 
         private void CancelButtonOnClick(object sender, EventArgs eventArgs)
@@ -151,5 +174,6 @@ namespace com.howmuchof.squirrgithuels.wp
         {
             pivot1.SelectedIndex = 2;
         }
+        
     }
 }

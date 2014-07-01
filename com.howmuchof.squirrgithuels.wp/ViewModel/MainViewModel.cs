@@ -12,16 +12,21 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
+using GalaSoft.MvvmLight.Command;
 using Microsoft.Phone.Controls;
+using Sparrow.Chart;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {
@@ -39,10 +44,20 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         private Visibility   _flag;
         private DateTime _minTime;
         private DateTime _maxTime;
+        private SeriesCollection _series;
 
-        public MainViewModel()
+        public MainViewModel() 
         {
             DataItems = new ObservableCollection<DataItem>();
+
+            DataItems.CollectionChanged += delegate
+            {
+                MaxTime = _dataItems.Count != 0 ? _dataItems.Max(x => x.Date) : DateTime.Now;
+                MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
+                RaisePropertyChanged("GroupItems");
+            };
+
+            SetLine();
         }
 
         #region Properties
@@ -60,33 +75,18 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
-        public ObservableCollection<DataItem> GroupItems 
+        public IEnumerable<DataItem> GroupItems 
         {
             get
             {
                 if (!DataItems.Any()) return null;
+                var tmp = DataItems.OrderBy(x => x.Date).GroupBy(x => x.Date);
                 var items = new ObservableCollection<DataItem>();
-                var count = 0;
-                var sum = 0;
-                var tmp = DataItems.Where(x => x.Date >= MinTime && x.Date <= MaxTime).ToArray();
-                if(!tmp.Any()) return null;
-                var date = tmp.First().Date;  
-
-                foreach (var item in tmp)
-                {
-                    if (item.Date.ToShortDateString() != date.ToShortDateString())
-                    {
-                        items.Add(new DataItem(sum/count, new DateTime(date.Year, date.Month, date.Day, 0, 0, 0), date));
-                        sum = 0;
-                        count = 0;
-                        date = item.Date;
-                    }
-                    count++;
-                    sum += item.Count;
-                }
-                items.Add(new DataItem(sum/count, new DateTime(date.Year, date.Month, date.Day, 0, 0, 0), date));
-
-                return items;
+                
+                foreach (var l in tmp.Where(l => l.Key.Date >= MinTime.Date && l.Key.Date <= MaxTime.Date))
+                    items.Add(new DataItem(l.Sum(x => x.Count), l.Key, l.Key));
+                
+                return items.Count == 0 ? null : items;
             }
         }
 
@@ -134,6 +134,33 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
+        public SeriesCollection SeriesCollection
+        {
+            get { return _series; }
+            set
+            {
+                if(_series == value)
+                    return;
+
+                _series = value;
+                AddBinding();
+                RaisePropertyChanged(() => SeriesCollection);
+                RaisePropertyChanged(() => XAxes);
+            }
+        }
+
+        public XAxis XAxes
+        {
+            get
+            {
+                if(SeriesCollection.Count == 2) return new DateTimeXAxis {Interval = new TimeSpan(1, 0, 0, 0)};
+                return new CategoryXAxis();
+            }
+            set
+            {
+            }
+        }
+
         public DateTime MinTime  
         {
             get { return _minTime; }
@@ -143,7 +170,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
                 _minTime = value;
                 RaisePropertyChanged("MinTime");
-                RaisePropertyChanged("Minlol");
                 RaisePropertyChanged("GroupItems");
             }
         }
@@ -157,14 +183,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
                 _maxTime = value;
                 RaisePropertyChanged("MaxTime");
-                RaisePropertyChanged("Maxlol");
                 RaisePropertyChanged("GroupItems");
             }
         }
-
-        public double Maxlol { get { return new DateTime(_maxTime.Year, _maxTime.Month, _maxTime.Day, 0, 0, 0, 0).ToOADate(); } }
-
-        public double Minlol { get { return new DateTime(_minTime.Year, _minTime.Month, _minTime.Day, 0, 0, 0, 0).ToOADate(); } }
+        
         #endregion
         
         #region База данных 
@@ -177,14 +199,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 DataItems = new ObservableCollection<DataItem>(items);
             }
 
-            DataItems.CollectionChanged += delegate
-            {
-                MaxTime = _dataItems.Max(x => x.Date);
-                MinTime = MaxTime - new TimeSpan(5, 00, 00, 00);
-                RaisePropertyChanged("GroupItems");
-            };
-
-            MaxTime = _dataItems.Max(x => x.Date);
+            MaxTime = _dataItems.Count != 0 ? _dataItems.Max(x => x.Date) : DateTime.Now;
             MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
         }
         
@@ -197,7 +212,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
             var h = BinarySearch(item, 0, DataItems.Count);
             DataItems.Insert(h, item);
-            RaisePropertyChanged("GroupItems");
+            RaisePropertyChanged(() => GroupItems);
         }
         public void DeleteItem(DataItem item) 
         {
@@ -267,7 +282,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         {
             using (var db = new AppInfoContext())
             {
-                var appInfo = db.AppInfo.ToArray()[0];
+                var appInfo = db.AppInfo.First();
 
                 appInfo.Parametr = parametr;
                 db.SubmitChanges();
@@ -278,7 +293,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         {
             using (var db = new AppInfoContext())
             {
-                var appInfo = db.AppInfo.ToArray()[0];
+                var appInfo = db.AppInfo.First();
 
                 appInfo.LastTab = tab;
                 db.SubmitChanges();
@@ -286,6 +301,60 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         }
 
         #endregion
+        
+        #region Commands
+
+        #region Column Command
+
+        private RelayCommand _columnCommand;
+
+        public ICommand ColumnCommand
+        {
+            get
+            {
+                return _columnCommand ??
+                       (_columnCommand = new RelayCommand(SetColumn));
+            }
+        }
+
+        private void SetColumn()
+        {
+            SeriesCollection = new SeriesCollection
+            {
+                new ColumnSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"}
+            };
+        }
+
+        #endregion
+
+        #region Line Command
+
+        private RelayCommand _lineCommand;
+
+        public ICommand LineCommand
+        {
+            get { return _lineCommand ?? (_lineCommand = new RelayCommand(SetLine)); }
+        }
+
+        private void SetLine()
+        {
+            SeriesCollection = new SeriesCollection
+            {
+                new LineSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"},
+                new ScatterSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"}
+            };
+        }
+
+        #endregion
+        
+        #endregion
+
+
+        void AddBinding()
+        {
+            foreach (var s in SeriesCollection)
+                s.SetBinding(LineSeriesBase.PointsSourceProperty, new Binding {Source = GroupItems});
+        }
 
         ////public override void Cleanup()
         ////{

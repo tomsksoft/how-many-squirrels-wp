@@ -87,14 +87,6 @@ namespace com.howmuchof.squirrgithuels.wp
             ViewModelLocator.Main.ReadSettings();
             ViewModelLocator.Main.ReadDataFromDb();
 
-            if (!File.Exists("Settings.xml"))
-            {
-                var file = new FileStream("Settings.xml", FileMode.Create);
-                var doc = new XDocument(new XElement("settings",
-                    new XElement("param", "Белка"),
-                    new XElement("lastTab", "default")));
-                doc.Save(file);
-            }
             
         }
 

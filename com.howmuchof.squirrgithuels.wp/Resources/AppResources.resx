@@ -168,4 +168,7 @@
   <data name="TimeInteravl" xml:space="preserve">
     <value>Временной интервал</value>
   </data>
+  <data name="GraphView" xml:space="preserve">
+    <value>Переключить вид графика</value>
+  </data>
 </root>

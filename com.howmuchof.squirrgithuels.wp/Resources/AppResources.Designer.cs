@@ -143,6 +143,15 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Переключить вид графика.
+        /// </summary>
+        public static string GraphView {
+            get {
+                return ResourceManager.GetString("GraphView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Список.
         /// </summary>
         public static string ListPage {

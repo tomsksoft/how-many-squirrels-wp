@@ -81,10 +81,20 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             {
                 if (_date == value) return;
                 NotifyPropertyChanging("Date");
-                _date = new DateTime(value.Year, value.Month, value.Day, 0, 0, 0);
+                _date = value.Date;
                 NotifyPropertyChanged("Date");
             }
         }
+        public string DateS 
+        { 
+            get { return string.Format("{0}.{1:00}", Date.Day, Date.Month); } 
+            set 
+            {
+                NotifyPropertyChanging("DateS");
+                NotifyPropertyChanged("DateS"); 
+            } 
+        }
+
         [Column]
         public DateTime Time
         {

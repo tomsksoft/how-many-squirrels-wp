@@ -12,18 +12,37 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     [Table]
     public class AppInfo : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        private int _itemId;
         private string _parametr;
         private Tab _lastTab;
         private GraphView _graphView;
 
         public AppInfo()
         {
-            Parametr = "Белка";
-            LastTab = Tab.Main;
+            Parametr  = "Белка";
+            LastTab   = Tab.Main;
             GraphView = GraphView.Column;
         }
 
-        [Column(IsPrimaryKey = true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
+        public int ItemId
+        {
+            get
+            {
+                return _itemId;
+            }
+            set
+            {
+                if (_itemId != value)
+                {
+                    NotifyPropertyChanging("ItemId");
+                    _itemId = value;
+                    NotifyPropertyChanged("ItemId");
+                }
+            }
+        }
+
+        [Column]
         public string Parametr
         {
             get { return _parametr; }
