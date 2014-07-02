@@ -25,7 +25,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         }
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
-        public int ItemId
+        public int ItemId          
         {
             get
             {
@@ -43,7 +43,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         }
 
         [Column]
-        public string Parametr
+        public string Parametr     
         {
             get { return _parametr; }
             set
@@ -57,7 +57,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         }
 
         [Column]
-        public Tab LastTab
+        public Tab LastTab         
         {
             get { return _lastTab; }
             set
@@ -71,7 +71,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         }
         
         [Column]
-        public GraphView GraphView
+        public GraphView GraphView 
         {
             get { return _graphView; }
             set

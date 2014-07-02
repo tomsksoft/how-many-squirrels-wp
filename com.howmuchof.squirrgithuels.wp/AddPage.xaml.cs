@@ -63,7 +63,7 @@ namespace com.howmuchof.squirrgithuels.wp
                     Toggle1.Visibility  = Visibility.Collapsed;
                     context.Date        = new DateTime(_item.Date.Year, _item.Date.Month,  _item.Date.Day, 
                                                        _item.Time.Hour, _item.Time.Minute, _item.Time.Second);
-                    context.Count       = _item.Count;
+                    context.Count       = (int)_item.Count;
                     NavigationContext.QueryString.Clear();
                 }
             base.OnNavigatedTo(e);

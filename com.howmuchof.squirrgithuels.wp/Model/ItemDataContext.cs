@@ -21,7 +21,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public ItemDataContext() : base(DbConnectionString) { }
 
         public Table<DataItem> DataItems;
-
+        public Table<Parametr> Parametrs;
     }
 
     

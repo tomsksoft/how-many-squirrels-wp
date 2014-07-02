@@ -183,6 +183,6 @@ namespace com.howmuchof.squirrgithuels.wp
         {
             pivot1.SelectedIndex = 2;
         }
-        
+
     }
 }

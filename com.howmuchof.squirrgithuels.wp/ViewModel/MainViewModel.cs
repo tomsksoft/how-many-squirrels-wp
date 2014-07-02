@@ -85,7 +85,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 var items = new ObservableCollection<DataItem>();
                 
                 foreach (var l in tmp.Where(l => l.Key.Date >= MinTime.Date && l.Key.Date <= MaxTime.Date))
-                    items.Add(new DataItem(l.Sum(x => x.Count), l.Key, l.Key));
+                    items.Add(new DataItem(l.Sum(x => (int)x.Count), l.Key, l.Key));
                 
                 return items.Count == 0 ? null : items;
             }

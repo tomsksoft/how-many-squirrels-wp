@@ -22,12 +22,6 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     [Table]
     public class DataItem : INotifyPropertyChanged, INotifyPropertyChanging
     {
-
-        public override int GetHashCode()
-        {
-            return _itemId;
-        }
-
         public DataItem(int count, DateTime date, DateTime time)
         {
             Count = count;
@@ -44,7 +38,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 
 
         private int _itemId;
-        private int _count;
+        private object _count;
         private DateTime _date;
         private DateTime _time;
 
@@ -66,7 +60,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             }
         }
         [Column]
-        public int Count
+        public object Count
         {
             get { return _count; }
             set
@@ -120,6 +114,31 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         [Column(IsVersion = true)]
         private Binary _version;
 
+        [Column]
+        internal int ParametrId;
+        
+        private EntityRef<Parametr> _parametr;
+
+        [Association(Storage = "_parametr", ThisKey = "ParametrId", OtherKey = "ParametrId", IsForeignKey = true)]
+        public Parametr Parametr
+        {
+            get { return _parametr.Entity; }
+            set
+            {
+                NotifyPropertyChanging("Parametr");
+                _parametr.Entity = value;
+
+                if (value != null)
+                {
+                    ParametrId = value.ParametrId;
+                }
+
+                NotifyPropertyChanging("Parametr");
+            }
+        }
+
+        #region Overrides
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -127,15 +146,24 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             if (obj.GetType() != GetType()) return false;
             return Equals((DataItem) obj);
         }
+
         private bool Equals(DataItem other)
         {
             return _itemId == other._itemId;
         }
-        public override string ToString()
+
+        public override int GetHashCode()
         {
-            return "{" + Count + " -> " + Date.ToLongDateString() + " / " + Time.ToLongTimeString() + "}"; 
+            return _itemId;
         }
 
+        public override string ToString()
+        {
+            return "{" + Count + " -> " + Date.ToLongDateString() + " / " + Time.ToLongTimeString() + "}";
+        }
+
+        #endregion
+        
         #region INotifyPropertyChanged AND INotifyPropertyChanging MEMBERS
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -178,7 +178,7 @@
                     <sparrow:SparrowChart Name="Chart1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
 
                         <sparrow:SparrowChart.XAxis>
-                            <sparrow:CategoryXAxis ShowCrossLines="False" />
+                            <sparrow:CategoryXAxis ShowCrossLines="False"/>
                         </sparrow:SparrowChart.XAxis>
 
                         <sparrow:SparrowChart.YAxis>

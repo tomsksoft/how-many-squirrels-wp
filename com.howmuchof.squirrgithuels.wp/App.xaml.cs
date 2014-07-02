@@ -21,6 +21,7 @@ using System.Xml.Linq;
 using com.howmuchof.squirrgithuels.wp.Model;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Data.Linq;
 using Microsoft.Phone.Shell;
 using com.howmuchof.squirrgithuels.wp.Resources;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
@@ -29,6 +30,8 @@ namespace com.howmuchof.squirrgithuels.wp
 {
     public partial class App : Application
     {
+        public static int APP_VERSION = 2;
+
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -74,7 +77,32 @@ namespace com.howmuchof.squirrgithuels.wp
             
             using (var db = new ItemDataContext())
                 if (!db.DatabaseExists())           //Если базы данных еще нет
-                    db.CreateDatabase();            //создадим ее
+                {
+                    db.CreateDatabase();            //Cоздадим ее
+                    db.Parametrs.InsertOnSubmit(new Parametr());
+                    db.SubmitChanges();
+
+                    DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                    dbUpdater.DatabaseSchemaVersion = APP_VERSION;
+                    dbUpdater.Execute();
+                }
+                else
+                {
+                    var dbUpdater = db.CreateDatabaseSchemaUpdater();
+
+                    if (dbUpdater.DatabaseSchemaVersion < APP_VERSION)
+                    {
+                        dbUpdater.AddTable<Parametr>();
+                        dbUpdater.AddAssociation<DataItem>("Parametr");
+                        dbUpdater.AddColumn<DataItem>("ParametrId");
+                        
+                        // Add the new database version.
+                        dbUpdater.DatabaseSchemaVersion = APP_VERSION;
+
+                        // Perform the database update in a single transaction.
+                        dbUpdater.Execute();
+                    }
+                }
 
             using(var db = new AppInfoContext())
                 if (!db.DatabaseExists())

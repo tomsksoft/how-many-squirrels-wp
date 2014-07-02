@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="ru-RU" />
-  <App xmlns="" ProductID="{7bb2bf4e-dd9a-480c-bbcd-8771498cc843}" Title="How Much Of" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Nadyrshin S." Description="Сколько сегодня белок?&#xD;&#xA;Приложение для регулярного учета какого-то интересного параметра." Publisher="TomskSoft" PublisherID="{9eb6cbdd-6d7c-45e3-ad3b-ed9497160011}">
+  <App xmlns="" ProductID="{7bb2bf4e-dd9a-480c-bbcd-8771498cc843}" Title="How Much Of" RuntimeType="Silverlight" Version="2.0.0.0" Genre="apps.normal" Author="Nadyrshin S." Description="Сколько сегодня белок?&#xD;&#xA;Приложение для регулярного учета какого-то интересного параметра." Publisher="TomskSoft" PublisherID="{9eb6cbdd-6d7c-45e3-ad3b-ed9497160011}">
     <IconPath IsRelative="true" IsResource="false">Assets\Tiles\belka.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
