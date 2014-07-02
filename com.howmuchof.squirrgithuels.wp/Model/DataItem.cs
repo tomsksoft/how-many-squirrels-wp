@@ -22,6 +22,12 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     [Table]
     public class DataItem : INotifyPropertyChanged, INotifyPropertyChanging
     {
+
+        public override int GetHashCode()
+        {
+            return _itemId;
+        }
+
         public DataItem(int count, DateTime date, DateTime time)
         {
             Count = count;
@@ -116,10 +122,15 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 
         public override bool Equals(object obj)
         {
-            var t = (DataItem) obj;
-            return _itemId == t._itemId;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((DataItem) obj);
         }
-
+        private bool Equals(DataItem other)
+        {
+            return _itemId == other._itemId;
+        }
         public override string ToString()
         {
             return "{" + Count + " -> " + Date.ToLongDateString() + " / " + Time.ToLongTimeString() + "}"; 

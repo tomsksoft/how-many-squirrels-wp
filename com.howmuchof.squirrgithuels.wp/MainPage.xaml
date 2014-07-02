@@ -175,45 +175,59 @@
                     <toolkit:DatePicker Grid.Row="1" Grid.Column="1"
                                         Value="{Binding MaxTime, Mode=TwoWay}"/>
 
-                    <sparrow:SparrowChart Name="Chart" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0"
-                                          XAxis="{Binding XAxes}"
-                                          Series="{Binding SeriesCollection}">
+                    <sparrow:SparrowChart Name="Chart1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
 
-                        <!--<sparrow:SparrowChart.XAxis>
-                            <sparrow:CategoryXAxis ShowCrossLines="False"/>
-                        </sparrow:SparrowChart.XAxis>-->
+                        <sparrow:SparrowChart.XAxis>
+                            <sparrow:CategoryXAxis ShowCrossLines="False" />
+                        </sparrow:SparrowChart.XAxis>
 
                         <sparrow:SparrowChart.YAxis>
                             <sparrow:LinearYAxis Interval="1" MinValue="0"/>
                         </sparrow:SparrowChart.YAxis>
 
-                        <!--<sparrow:ColumnSeries PointsSource="{Binding GroupItems}" Name="ColumnSeries"
+                        <sparrow:ColumnSeries PointsSource="{Binding GroupItems}" Name="ColumnSeries"
                                               StrokeThickness="1"
                                               Stroke="{StaticResource PhoneContrastBackgroundBrush}"
                                               XPath="DateS"
                                               YPath="Count" 
-                                              UseSinglePart="True"  />-->
-                        
-                        <!--<sparrow:LineSeries PointsSource="{Binding GroupItems}" Name="LineSeries"
+                                              UseSinglePart="True"  
+                                              IsRefresh="True" />
+
+                    </sparrow:SparrowChart>
+
+                    <sparrow:SparrowChart Name="Chart2" Visibility="Collapsed"
+                                          Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
+
+                        <sparrow:SparrowChart.XAxis>
+                            <sparrow:DateTimeXAxis ShowCrossLines="False"
+                                                   StringFormat="dd.MM"/>
+                        </sparrow:SparrowChart.XAxis>
+
+                        <sparrow:SparrowChart.YAxis>
+                            <sparrow:LinearYAxis Interval="1" MinValue="0"/>
+                        </sparrow:SparrowChart.YAxis>
+
+                        <sparrow:LineSeries PointsSource="{Binding GroupItems}" 
                                               StrokeThickness="1"
                                               Stroke="{StaticResource PhoneContrastBackgroundBrush}"
                                               XPath="Date"
                                               YPath="Count" 
-                                              UseSinglePart="True" Visibility="Collapsed">
+                                              UseSinglePart="True"
+                                              IsRefresh="True">
                             <sparrow:LineSeries.XAxis>
                                 <sparrow:DateTimeXAxis/>
                             </sparrow:LineSeries.XAxis>
                         </sparrow:LineSeries>
-                        <sparrow:ScatterSeries PointsSource="{Binding GroupItems}" Name="ScatterSeries"
+                        <sparrow:ScatterSeries PointsSource="{Binding GroupItems}"
                                               StrokeThickness="1"
                                               Stroke="{StaticResource PhoneContrastBackgroundBrush}"
                                               XPath="Date"
                                               YPath="Count" 
-                                              UseSinglePart="True" Visibility="Collapsed">
+                                              UseSinglePart="True" IsRefresh="True">
                             <sparrow:ScatterSeries.XAxis>
                                 <sparrow:DateTimeXAxis/>
                             </sparrow:ScatterSeries.XAxis>
-                        </sparrow:ScatterSeries>-->
+                        </sparrow:ScatterSeries>
 
                     </sparrow:SparrowChart>
                 </Grid>

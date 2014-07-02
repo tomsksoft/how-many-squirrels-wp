@@ -12,9 +12,11 @@
  */
 
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Shell;
@@ -83,22 +85,21 @@ namespace com.howmuchof.squirrgithuels.wp
                 Text = AppResources.GraphView
             };
             _graphButton.Click += GraphButtonOnClick;
+            
         }
 
         private void GraphButtonOnClick(object sender, EventArgs eventArgs)
         {
-            //if (ColumnSeries.Visibility == Visibility.Collapsed)
-            //{
-            //    ColumnSeries.Visibility = Visibility.Visible;
-            //    LineSeries.Visibility = Visibility.Collapsed;
-            //    ScatterSeries.Visibility = Visibility.Collapsed;
-            //}
-            //else
-            //{
-            //    ColumnSeries.Visibility = Visibility.Collapsed;
-            //    LineSeries.Visibility = Visibility.Visible;
-            //    ScatterSeries.Visibility = Visibility.Visible;
-            //}
+            if (Chart1.Visibility == Visibility.Visible)
+            {
+                Chart1.Visibility = Visibility.Collapsed;
+                Chart2.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Chart1.Visibility = Visibility.Visible;
+                Chart2.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void CancelButtonOnClick(object sender, EventArgs eventArgs)
@@ -120,12 +121,20 @@ namespace com.howmuchof.squirrgithuels.wp
                 ApplicationBar.Buttons.Add(button);
         }
 
-        private void Pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (pivot1.SelectedIndex == 1)
-                ViewButtons(_addButton, _selectButton, _settingsButton);
-            else
-                ViewButtons(_addButton, _settingsButton);
+            switch (pivot1.SelectedIndex)
+            {
+                case 1:
+                    ViewButtons(_addButton, _selectButton, _settingsButton);
+                    break;
+                case 2:
+                    ViewButtons(_addButton, _settingsButton, _graphButton);
+                    break;
+                default:
+                    ViewButtons(_addButton, _settingsButton);
+                    break;
+            }
             ((MainViewModel) DataContext).LastActiveTab = (Tab)pivot1.SelectedIndex;
         }
 

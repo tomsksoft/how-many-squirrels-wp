@@ -21,6 +21,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
@@ -39,12 +40,12 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<DataItem> _dataItems;
-        private string _parametr;
-        private Tab _lastActiveTab;
-        private Visibility   _flag;
-        private DateTime _minTime;
-        private DateTime _maxTime;
-        private SeriesCollection _series;
+        private string           _parametr;
+        private Tab              _lastActiveTab;
+        private Visibility       _flag;
+        private DateTime         _minTime;
+        private DateTime         _maxTime;
+        //private SeriesCollection _series;
 
         public MainViewModel() 
         {
@@ -56,8 +57,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
                 RaisePropertyChanged("GroupItems");
             };
-
-            SetLine();
+            
+            //SetLine();
         }
 
         #region Properties
@@ -134,32 +135,32 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             }
         }
 
-        public SeriesCollection SeriesCollection
-        {
-            get { return _series; }
-            set
-            {
-                if(_series == value)
-                    return;
+        //public SeriesCollection SeriesCollection
+        //{
+        //    get { return _series; }
+        //    set
+        //    {
+        //        if(_series == value)
+        //            return;
 
-                _series = value;
-                AddBinding();
-                RaisePropertyChanged(() => SeriesCollection);
-                RaisePropertyChanged(() => XAxes);
-            }
-        }
+        //        _series = value;
+        //        AddBinding();
+        //        RaisePropertyChanged(() => SeriesCollection);
+        //        RaisePropertyChanged(() => XAxes);
+        //    }
+        //}
 
-        public XAxis XAxes
-        {
-            get
-            {
-                if(SeriesCollection.Count == 2) return new DateTimeXAxis {Interval = new TimeSpan(1, 0, 0, 0)};
-                return new CategoryXAxis();
-            }
-            set
-            {
-            }
-        }
+        //public XAxis XAxes       
+        //{
+        //    get
+        //    {
+        //        if(SeriesCollection.Count == 2) return new DateTimeXAxis {Interval = new TimeSpan(1, 0, 0, 0)};
+        //        return new CategoryXAxis();
+        //    }
+        //    set
+        //    {
+        //    }
+        //}
 
         public DateTime MinTime  
         {
@@ -182,8 +183,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 if(value == _maxTime) return;
 
                 _maxTime = value;
-                RaisePropertyChanged("MaxTime");
-                RaisePropertyChanged("GroupItems");
+                RaisePropertyChanged(() => MaxTime);
+                RaisePropertyChanged(() => GroupItems);
             }
         }
         
@@ -302,59 +303,33 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         #endregion
         
-        #region Commands
+        //#region Methods
 
-        #region Column Command
+        //public void SetColumn()
+        //{
+        //    SeriesCollection = new SeriesCollection
+        //    {
+        //        new ColumnSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"}
+        //    };
+        //}
+        //public void SetLine()
+        //{
+        //    SeriesCollection = new SeriesCollection
+        //    {
+        //        new LineSeries    {PointsSource = GroupItems, XPath = "Date", YPath = "Count", IsRefresh = true},
+        //        new ScatterSeries {PointsSource = GroupItems, XPath = "Date", YPath = "Count", IsRefresh = true}
+        //    };
+            
+        //}
+        //void AddBinding()
+        //{
+        //    foreach (var s in SeriesCollection)
+        //        s.SetBinding(LineSeriesBase.PointsSourceProperty, new Binding {Source = GroupItems});
+        //}
 
-        private RelayCommand _columnCommand;
-
-        public ICommand ColumnCommand
-        {
-            get
-            {
-                return _columnCommand ??
-                       (_columnCommand = new RelayCommand(SetColumn));
-            }
-        }
-
-        private void SetColumn()
-        {
-            SeriesCollection = new SeriesCollection
-            {
-                new ColumnSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"}
-            };
-        }
-
-        #endregion
-
-        #region Line Command
-
-        private RelayCommand _lineCommand;
-
-        public ICommand LineCommand
-        {
-            get { return _lineCommand ?? (_lineCommand = new RelayCommand(SetLine)); }
-        }
-
-        private void SetLine()
-        {
-            SeriesCollection = new SeriesCollection
-            {
-                new LineSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"},
-                new ScatterSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"}
-            };
-        }
-
-        #endregion
-        
-        #endregion
+        //#endregion
 
 
-        void AddBinding()
-        {
-            foreach (var s in SeriesCollection)
-                s.SetBinding(LineSeriesBase.PointsSourceProperty, new Binding {Source = GroupItems});
-        }
 
         ////public override void Cleanup()
         ////{
