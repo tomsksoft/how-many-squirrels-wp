@@ -8,7 +8,7 @@
  * This software is licensed under a GPL v3
  * http://www.gnu.org/licenses/gpl.txt
  *
- * Created by Nadyrshin Stanislav on 21.04.2014
+ * Created by Nadyrshin Stanislav on 21.06.2014
  */
 
 using System;

@@ -8,7 +8,7 @@
  * This software is licensed under a GPL v3
  * http://www.gnu.org/licenses/gpl.txt
  *
- * Created by Nadyrshin Stanislav on 18.04.2014
+ * Created by Nadyrshin Stanislav on 18.06.2014
  */
 
 using System;
@@ -114,12 +114,14 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         [Column(IsVersion = true)]
         private Binary _version;
 
-        [Column]
-        internal int ParametrId;
+        [Column(CanBeNull = true)]
+        internal int? ParametrId;
         
         private EntityRef<Parametr> _parametr;
 
-        [Association(Storage = "_parametr", ThisKey = "ParametrId", OtherKey = "ParametrId", IsForeignKey = true)]
+        //При изменении таблицы допускается только добавление столбцов, которые могут содержать пустые значения. 
+        //Невозможно добавить столбец в таблицу, так как в нем не допускаются пустые значения.
+        [Association(Storage = "_parametr", ThisKey = "ParametrId", OtherKey = "Id", IsForeignKey = true)]
         public Parametr Parametr
         {
             get { return _parametr.Entity; }
@@ -130,7 +132,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 
                 if (value != null)
                 {
-                    ParametrId = value.ParametrId;
+                    ParametrId = value.Id;
                 }
 
                 NotifyPropertyChanging("Parametr");

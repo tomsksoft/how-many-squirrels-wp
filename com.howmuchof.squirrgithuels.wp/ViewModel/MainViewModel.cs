@@ -8,26 +8,16 @@
  * This software is licensed under a GPL v3
  * http://www.gnu.org/licenses/gpl.txt
  *
- * Created by Nadyrshin Stanislav on 18.04.2014
+ * Created by Nadyrshin Stanislav on 18.06.2014
  */
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Phone.Controls;
-using Sparrow.Chart;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {

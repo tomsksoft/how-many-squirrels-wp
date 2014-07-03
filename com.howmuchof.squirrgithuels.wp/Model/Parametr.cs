@@ -1,4 +1,18 @@
-﻿using System.ComponentModel;
+﻿/*
+ * How many squirrels: tool for young naturalist
+ *
+ * This application is created within the internship
+ * in the Education Department of Tomsksoft, http://tomsksoft.com
+ * Idea and leading: Sergei Borisov
+ *
+ * This software is licensed under a GPL v3
+ * http://www.gnu.org/licenses/gpl.txt
+ *
+ * Created by Nadyrshin Stanislav on 02.07.2014
+ */
+
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
@@ -7,39 +21,39 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     [Table]
     public class Parametr : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        private int _parametrId;
+        private int _id;
         private string _name;
         private string _type;
 
         public Parametr()
         {
-            _items = new EntitySet<DataItem>(); //TODO возможно стоит добавить обработчики событий
+            _items = new EntitySet<DataItem>(AttachItem, DetachItem); 
             Type = "int";
             Name = "Белка";
         }
 
         public Parametr(string name, string type)
         {
-            _items = new EntitySet<DataItem>();
+            _items = new EntitySet<DataItem>(AttachItem, DetachItem); 
             Type = type;
             Name = name;
         }
 
         //[Column(DbType = "INT NOT NULL IDENTITY", IsDbGenerated = true, IsPrimaryKey = true)]
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
-        public int ParametrId
+        public int Id
         {
             get
             {
-                return _parametrId;
+                return _id;
             }
             set
             {
-                if (_parametrId == value) return;
+                if (_id == value) return;
 
-                NotifyPropertyChanging("ParametrId");
-                _parametrId = value;
-                NotifyPropertyChanged("ParametrId");
+                NotifyPropertyChanging("Id");
+                _id = value;
+                NotifyPropertyChanged("Id");
             }
         }
 
@@ -78,11 +92,30 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         private readonly EntitySet<DataItem> _items;
 
 
-        [Association(Storage = "_items", OtherKey = "ParametrId", ThisKey = "ParametrId")]
+        [Association(Storage = "_items", OtherKey = "ParametrId", ThisKey = "Id")]
         public EntitySet<DataItem> Items
         {
             get { return _items; }
             set { _items.Assign(value); }
+        }
+
+        // Called during an add operation
+        private void AttachItem(DataItem item)
+        {
+            NotifyPropertyChanging("DataItem");
+            item.Parametr = this;
+        }
+
+        // Called during a remove operation
+        private void DetachItem(DataItem item)
+        {
+            NotifyPropertyChanging("DataItem");
+            item.Parametr = null;
+        }
+
+        public override string ToString()
+        {
+            return Type + " " + Name;
         }
 
         #region INotifyPropertyChanged AND INotifyPropertyChanging MEMBERS

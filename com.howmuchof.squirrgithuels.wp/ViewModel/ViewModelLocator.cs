@@ -8,13 +8,11 @@
  * This software is licensed under a GPL v3
  * http://www.gnu.org/licenses/gpl.txt
  *
- * Created by Nadyrshin Stanislav on 18.04.2014
+ * Created by Nadyrshin Stanislav on 18.06.2014
  */
 
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using com.howmuchof.squirrgithuels.wp.Model;
 
 namespace com.howmuchof.squirrgithuels.wp.ViewModel
 {

@@ -8,20 +8,16 @@
  * This software is licensed under a GPL v3
  * http://www.gnu.org/licenses/gpl.txt
  *
- * Created by Nadyrshin Stanislav on 18.04.2014
+ * Created by Nadyrshin Stanislav on 18.06.2014
  */
 
 using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Shell;
 using com.howmuchof.squirrgithuels.wp.Resources;
-using Sparrow.Chart;
 using GestureEventArgs = System.Windows.Input.GestureEventArgs;
 
 namespace com.howmuchof.squirrgithuels.wp

@@ -8,16 +8,15 @@
  * This software is licensed under a GPL v3
  * http://www.gnu.org/licenses/gpl.txt
  *
- * Created by Nadyrshin Stanislav on 18.04.2014
+ * Created by Nadyrshin Stanislav on 18.06.2014
  */
 
 using System;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using System.Xml.Linq;
 using com.howmuchof.squirrgithuels.wp.Model;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
@@ -28,9 +27,9 @@ using com.howmuchof.squirrgithuels.wp.ViewModel;
 
 namespace com.howmuchof.squirrgithuels.wp
 {
-    public partial class App : Application
+    public partial class App
     {
-        public static int APP_VERSION = 2;
+        private const int AppVersion = 2;
 
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
@@ -75,35 +74,6 @@ namespace com.howmuchof.squirrgithuels.wp
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
             
-            using (var db = new ItemDataContext())
-                if (!db.DatabaseExists())           //Если базы данных еще нет
-                {
-                    db.CreateDatabase();            //Cоздадим ее
-                    db.Parametrs.InsertOnSubmit(new Parametr());
-                    db.SubmitChanges();
-
-                    DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
-                    dbUpdater.DatabaseSchemaVersion = APP_VERSION;
-                    dbUpdater.Execute();
-                }
-                else
-                {
-                    var dbUpdater = db.CreateDatabaseSchemaUpdater();
-
-                    if (dbUpdater.DatabaseSchemaVersion < APP_VERSION)
-                    {
-                        dbUpdater.AddTable<Parametr>();
-                        dbUpdater.AddAssociation<DataItem>("Parametr");
-                        dbUpdater.AddColumn<DataItem>("ParametrId");
-                        
-                        // Add the new database version.
-                        dbUpdater.DatabaseSchemaVersion = APP_VERSION;
-
-                        // Perform the database update in a single transaction.
-                        dbUpdater.Execute();
-                    }
-                }
-
             using(var db = new AppInfoContext())
                 if (!db.DatabaseExists())
                 {
@@ -111,6 +81,45 @@ namespace com.howmuchof.squirrgithuels.wp
                     db.AppInfo.InsertOnSubmit(new AppInfo());
                     db.SubmitChanges();
                 }
+
+            using (var db = new ItemDataContext())
+                if (!db.DatabaseExists())           //Если базы данных еще нет
+                {
+                    db.CreateDatabase();            //Cоздадим ее
+                    db.Parametrs.InsertOnSubmit(new Parametr());
+                    db.SubmitChanges();
+
+                    var dbUpdater = db.CreateDatabaseSchemaUpdater();
+                    dbUpdater.DatabaseSchemaVersion = AppVersion;
+                    dbUpdater.Execute();
+                }
+                else
+                {
+                    var dbUpdater = db.CreateDatabaseSchemaUpdater();
+
+                    if (dbUpdater.DatabaseSchemaVersion < AppVersion)
+                    {
+                        dbUpdater.AddTable<Parametr>();
+                        dbUpdater.AddColumn<DataItem>("ParametrId");
+                        dbUpdater.AddAssociation<DataItem>("Parametr");
+                        
+                        // Add the new database version.
+                        dbUpdater.DatabaseSchemaVersion = AppVersion;
+
+                        // Perform the database update in a single transaction.
+                        dbUpdater.Execute();
+
+                        var p = new Parametr(ViewModelLocator.Main.Parametr, "int");
+                        db.Parametrs.InsertOnSubmit(p);
+                        db.SubmitChanges();
+
+                        foreach (var item in db.DataItems)
+                            item.Parametr = p;
+
+                        db.SubmitChanges();
+                    }
+                }
+
 
             ViewModelLocator.Main.ReadSettings();
             ViewModelLocator.Main.ReadDataFromDb();
@@ -167,12 +176,12 @@ namespace com.howmuchof.squirrgithuels.wp
         #region Phone application initialization
 
         // Avoid double-initialization
-        private bool phoneApplicationInitialized = false;
+        private bool _phoneApplicationInitialized;
 
         // Do not add any additional code to this method
         private void InitializePhoneApplication()
         {
-            if (phoneApplicationInitialized)
+            if (_phoneApplicationInitialized)
                 return;
 
             // Create the frame but don't set it as RootVisual yet; this allows the splash
@@ -189,7 +198,7 @@ namespace com.howmuchof.squirrgithuels.wp
             RootFrame.Navigated += CheckForResetNavigation;
 
             // Ensure we don't initialize again
-            phoneApplicationInitialized = true;
+            _phoneApplicationInitialized = true;
         }
 
         // Do not add any additional code to this method
@@ -223,7 +232,7 @@ namespace com.howmuchof.squirrgithuels.wp
             // For UI consistency, clear the entire page stack
             while (RootFrame.RemoveBackEntry() != null)
             {
-                ; // do nothing
+                // do nothing
             }
         }
 
@@ -266,7 +275,7 @@ namespace com.howmuchof.squirrgithuels.wp
                 //
                 // If a compiler error is hit then ResourceFlowDirection is missing from
                 // the resource file.
-                FlowDirection flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
+                var flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
                 RootFrame.FlowDirection = flow;
             }
             catch
