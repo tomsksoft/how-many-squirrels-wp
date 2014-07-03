@@ -35,7 +35,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         private Visibility       _flag;
         private DateTime         _minTime;
         private DateTime         _maxTime;
-        //private SeriesCollection _series;
+
+        private readonly ItemDataContext  _context;
 
         public MainViewModel() 
         {
@@ -43,11 +44,12 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
             DataItems.CollectionChanged += delegate
             {
-                MaxTime = _dataItems.Count != 0 ? _dataItems.Max(x => x.Date) : DateTime.Now;
+                MaxTime = DateTime.Now.Date;
                 MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
                 RaisePropertyChanged("GroupItems");
             };
-            
+
+            _context = new ItemDataContext();
             //SetLine();
         }
 
@@ -59,7 +61,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             private set
             {
                 if (_dataItems == value) return;
-                ;
+                
                 _dataItems = new ObservableCollection<DataItem>(value.OrderByDescending(x => x.Time));
                 RaisePropertyChanged("DataItems");
                 RaisePropertyChanged("GroupItems");
@@ -84,7 +86,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         public string Parametr   
         {
             get { return _parametr; }
-            private set
+            set
             {
                 if (value == _parametr)
                     return;
@@ -184,58 +186,46 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         public void ReadDataFromDb()          
         {
-            using (var db = new ItemDataContext())
-            {
-                var items = from DataItem item in db.DataItems select item;
-                DataItems = new ObservableCollection<DataItem>(items);
-            }
+            var items = from DataItem item in _context.DataItems select item;
+            DataItems = new ObservableCollection<DataItem>(items);
 
-            MaxTime = _dataItems.Count != 0 ? _dataItems.Max(x => x.Date) : DateTime.Now;
+            MaxTime = DateTime.Now.Date;
             MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
         }
         
         public void AddItem(DataItem item)    
         {
-            using (var db = new ItemDataContext())
-            {
-                db.DataItems.InsertOnSubmit(item);
-                db.SubmitChanges();
-            }
+            _context.DataItems.InsertOnSubmit(item);
+            _context.SubmitChanges();
+            
             var h = BinarySearch(item, 0, DataItems.Count);
             DataItems.Insert(h, item);
             RaisePropertyChanged(() => GroupItems);
         }
         public void DeleteItem(DataItem item) 
         {
-            using (var db = new ItemDataContext())
-            {
-                var tr = db.DataItems.First(x => x.ItemId == item.ItemId);
-                db.DataItems.DeleteOnSubmit(tr);
-                db.SubmitChanges();
-            }
+            var tr = _context.DataItems.First(x => x.ItemId == item.ItemId);
+            _context.DataItems.DeleteOnSubmit(tr);
+            _context.SubmitChanges();
+            
             DataItems.Remove(item);
             RaisePropertyChanged("GroupItems");
         }
         public void DeleteAll()               
         {
-            using (var db = new ItemDataContext())
-            {
-                db.DataItems.DeleteAllOnSubmit(db.DataItems);
-                db.SubmitChanges();
-            }
+            _context.DataItems.DeleteAllOnSubmit(_context.DataItems);
+            _context.SubmitChanges();
+            
             DataItems.Clear();
             RaisePropertyChanged("GroupItems");
         }
         public void UpdateItem(DataItem item, int count, DateTime date, DateTime time)
         {
-            using (var db = new ItemDataContext())
-            {
-                var oldItem = db.DataItems.First(x => x.ItemId == item.ItemId);
-                oldItem.Count = count;
-                oldItem.Date  = date;
-                oldItem.Time  = time;
-                db.SubmitChanges();
-            }
+            var oldItem = _context.DataItems.First(x => x.ItemId == item.ItemId);
+            oldItem.Count = count;
+            oldItem.Date  = date;
+            oldItem.Time  = time;
+            _context.SubmitChanges();
 
             var first = DataItems.First(x => x.ItemId == item.ItemId);
             first.Count = count;
@@ -243,15 +233,23 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             first.Time = time;
             RaisePropertyChanged("GroupItems");
         }
+
         private int BinarySearch(DataItem item, int left, int right)
         {
-            int mid = left + (right - left) / 2;
+            while (true)
+            {
+                var mid = left + (right - left)/2;
 
-            if (right <= left) return mid;
+                if (right <= left) return mid;
 
-            if (item.Time > DataItems[mid].Time) return BinarySearch(item, left, mid);
-            
-            return BinarySearch(item, mid + 1, right);
+                if (item.Time > DataItems[mid].Time)
+                {
+                    right = mid;
+                    continue;
+                }
+
+                left = mid + 1;
+            }
         }
 
         #endregion
@@ -293,33 +291,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         #endregion
         
-        //#region Methods
-
-        //public void SetColumn()
-        //{
-        //    SeriesCollection = new SeriesCollection
-        //    {
-        //        new ColumnSeries {PointsSource = GroupItems, XPath = "DateS", YPath = "Count"}
-        //    };
-        //}
-        //public void SetLine()
-        //{
-        //    SeriesCollection = new SeriesCollection
-        //    {
-        //        new LineSeries    {PointsSource = GroupItems, XPath = "Date", YPath = "Count", IsRefresh = true},
-        //        new ScatterSeries {PointsSource = GroupItems, XPath = "Date", YPath = "Count", IsRefresh = true}
-        //    };
-            
-        //}
-        //void AddBinding()
-        //{
-        //    foreach (var s in SeriesCollection)
-        //        s.SetBinding(LineSeriesBase.PointsSourceProperty, new Binding {Source = GroupItems});
-        //}
-
-        //#endregion
-
-
 
         ////public override void Cleanup()
         ////{

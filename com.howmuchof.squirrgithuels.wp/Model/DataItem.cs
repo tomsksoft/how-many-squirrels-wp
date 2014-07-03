@@ -119,8 +119,6 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         
         private EntityRef<Parametr> _parametr;
 
-        //При изменении таблицы допускается только добавление столбцов, которые могут содержать пустые значения. 
-        //Невозможно добавить столбец в таблицу, так как в нем не допускаются пустые значения.
         [Association(Storage = "_parametr", ThisKey = "ParametrId", OtherKey = "Id", IsForeignKey = true)]
         public Parametr Parametr
         {

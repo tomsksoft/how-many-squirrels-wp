@@ -10,10 +10,19 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public EnumItem(List<string> enumList, string value)
         {
             EnumList = enumList;
-            _value = value;
+            Value = value;
             if(enumList.Contains(value)) throw new Exception("Перечисление не содержит этого эдемента");
         }
 
-        public List<string> EnumList { get; set; }
+        public List<string> EnumList { get; private set; }
+        public string Value
+        {
+            get { return _value; }
+            set
+            {
+                if (!EnumList.Contains(value)) throw new Exception("Перечисление не содержит этого эдемента");
+                _value = value;
+            }
+        }
     }
 }

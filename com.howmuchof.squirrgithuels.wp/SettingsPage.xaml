@@ -19,6 +19,7 @@
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:ignore="http://www.ignore.com"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             mc:Ignorable="d ignore"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -74,10 +75,18 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
             <TextBlock Text="{Binding Path=LocalizedResources.ChangeParametr, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center"/>
-            <TextBox Name="Box" Text="{Binding Parametr, Mode=TwoWay}" Grid.Row="1"/>
+            <TextBox Name="Box" Text="{Binding Parametr}" Grid.Row="1"/>
+            <toolkit:ListPicker Grid.Row="2">
+                <toolkit:ListPickerItem Content="Целое число" />
+                <toolkit:ListPickerItem Content="Вещественное число" />
+                <toolkit:ListPickerItem Content="Момент времени" />
+                <toolkit:ListPickerItem Content="Перечислимый параметр" />
+                <toolkit:ListPickerItem Content="Интервал времени" />
+            </toolkit:ListPicker>
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are

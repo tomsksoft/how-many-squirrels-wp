@@ -81,6 +81,7 @@ namespace com.howmuchof.squirrgithuels.wp
                     db.AppInfo.InsertOnSubmit(new AppInfo());
                     db.SubmitChanges();
                 }
+            ViewModelLocator.Main.ReadSettings();
 
             using (var db = new ItemDataContext())
                 if (!db.DatabaseExists())           //Если базы данных еще нет
@@ -121,7 +122,6 @@ namespace com.howmuchof.squirrgithuels.wp
                 }
 
 
-            ViewModelLocator.Main.ReadSettings();
             ViewModelLocator.Main.ReadDataFromDb();
 
             

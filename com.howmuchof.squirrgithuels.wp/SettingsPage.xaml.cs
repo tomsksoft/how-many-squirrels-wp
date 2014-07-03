@@ -48,11 +48,12 @@ namespace com.howmuchof.squirrgithuels.wp
         private void Ok(object sender, EventArgs e)
         {
             if(Box.Text == "") return;
-            
-            Box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+
 
             if (MessageBox.Show("Все существующие записи будут стерты", "Вы уверены?", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 ((MainViewModel) DataContext).DeleteAll();
+
+            ViewModelLocator.Main.Parametr = Box.Text;
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
