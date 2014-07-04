@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using com.howmuchof.squirrgithuels.wp.Model;
@@ -84,6 +85,8 @@ namespace com.howmuchof.squirrgithuels.wp
             
         }
 
+        #region Handlers + one method
+
         private void GraphButtonOnClick(object sender, EventArgs eventArgs)
         {
             if (Chart1.Visibility == Visibility.Visible)
@@ -100,15 +103,14 @@ namespace com.howmuchof.squirrgithuels.wp
 
         private void CancelButtonOnClick(object sender, EventArgs eventArgs)
         {
-            if(MultiSelector.SelectedItems.Count > 0) MultiSelector.SelectedItems.Clear();
+            if (MultiSelector.SelectedItems.Count > 0) MultiSelector.SelectedItems.Clear();
             MultiSelector.IsSelectionEnabled = false;
         }
 
         private void SettingsButtonOnClick(object sender, EventArgs eventArgs)
         {
-            NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/ParametrlistPage.xaml", UriKind.Relative));
         }
-
 
         private void ViewButtons(params ApplicationBarIconButton[] buttons)
         {
@@ -131,43 +133,44 @@ namespace com.howmuchof.squirrgithuels.wp
                     ViewButtons(_addButton, _settingsButton);
                     break;
             }
-            ((MainViewModel) DataContext).LastActiveTab = (Tab)pivot1.SelectedIndex;
+            ((MainViewModel) DataContext).LastActiveTab = (Tab) pivot1.SelectedIndex;
         }
 
-
-        void AddButton_Click(object sender, EventArgs e)
+        private void AddButton_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/AddPage.xaml", UriKind.Relative));
         }
-       
+
         private void SelectButtonOnClick(object sender, EventArgs eventArgs)
         {
             MultiSelector.EnforceIsSelectionEnabled = true;
         }
+
         private void DeleteButtonOnClick(object sender, EventArgs eventArgs)
         {
-            while(MultiSelector.SelectedItems.Count > 0)
+            while (MultiSelector.SelectedItems.Count > 0)
                 ViewModelLocator.Main.DeleteItem((DataItem) MultiSelector.SelectedItems[0]);
 
             MultiSelector.IsSelectionEnabled = false;
         }
 
-        private void MultiSelector_IsSelectionEnabledChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        private void MultiSelector_IsSelectionEnabledChanged(object sender,
+            DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue)
+            if ((bool) e.NewValue)
                 ViewButtons(_deleteButton, _cancelButton);
             else
                 ViewButtons(_addButton, _selectButton, _settingsButton);
         }
-        
+
         private void OnTap(object sender, GestureEventArgs e)
         {
-            var block = (TextBlock)((Grid)sender).Children[0];
+            var block = (TextBlock) ((Grid) sender).Children[0];
             using (var db = new ItemDataContext())
                 NavigationService.Navigate(new Uri("/AddPage.xaml?Item=" + block.Text, UriKind.Relative));
         }
 
-        private void PhoneApplicationPage_BackKeyPress(object sender, System.ComponentModel.CancelEventArgs e)
+        private void PhoneApplicationPage_BackKeyPress(object sender, CancelEventArgs e)
         {
             if (!MultiSelector.IsSelectionEnabled) return;
 
@@ -179,6 +182,9 @@ namespace com.howmuchof.squirrgithuels.wp
         {
             pivot1.SelectedIndex = 2;
         }
+
+        #endregion
+
 
     }
 }

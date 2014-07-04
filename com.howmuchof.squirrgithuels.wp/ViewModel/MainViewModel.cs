@@ -36,7 +36,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         private DateTime         _minTime;
         private DateTime         _maxTime;
 
-        private readonly ItemDataContext  _context;
+        private readonly ItemDataContext  _mainContext;
+        private readonly AppInfoContext   _appInfoContext;
 
         public MainViewModel() 
         {
@@ -49,7 +50,9 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("GroupItems");
             };
 
-            _context = new ItemDataContext();
+            _mainContext = new ItemDataContext();
+            _appInfoContext = new AppInfoContext();
+            
             //SetLine();
         }
 
@@ -67,7 +70,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("GroupItems");
             }
         }
-
         public IEnumerable<DataItem> GroupItems 
         {
             get
@@ -82,7 +84,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 return items.Count == 0 ? null : items;
             }
         }
-
         public string Parametr   
         {
             get { return _parametr; }
@@ -100,7 +101,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("Parametr");
             }
         }
-
+        public ObservableCollection<Parametr> Parametrs
+        {
+            get { return new ObservableCollection<Parametr>(_mainContext.Parametrs.ToArray()); }
+        } 
         public Visibility Flag   
         {
             get { return _parametr != "Белка" ? Visibility.Collapsed : _flag; }
@@ -112,7 +116,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("Flag");
             }
         }
-
         public Tab LastActiveTab 
         {
             get { return _lastActiveTab; }
@@ -126,34 +129,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("LastActiveTab");
             }
         }
-
-        //public SeriesCollection SeriesCollection
-        //{
-        //    get { return _series; }
-        //    set
-        //    {
-        //        if(_series == value)
-        //            return;
-
-        //        _series = value;
-        //        AddBinding();
-        //        RaisePropertyChanged(() => SeriesCollection);
-        //        RaisePropertyChanged(() => XAxes);
-        //    }
-        //}
-
-        //public XAxis XAxes       
-        //{
-        //    get
-        //    {
-        //        if(SeriesCollection.Count == 2) return new DateTimeXAxis {Interval = new TimeSpan(1, 0, 0, 0)};
-        //        return new CategoryXAxis();
-        //    }
-        //    set
-        //    {
-        //    }
-        //}
-
+        
         public DateTime MinTime  
         {
             get { return _minTime; }
@@ -166,7 +142,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("GroupItems");
             }
         }
-
         public DateTime MaxTime  
         {
             get { return _maxTime; }
@@ -186,52 +161,66 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         public void ReadDataFromDb()          
         {
-            var items = from DataItem item in _context.DataItems select item;
+            var items = from DataItem item in _mainContext.DataItems select item;
             DataItems = new ObservableCollection<DataItem>(items);
 
             MaxTime = DateTime.Now.Date;
             MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
         }
-        
         public void AddItem(DataItem item)    
         {
-            _context.DataItems.InsertOnSubmit(item);
-            _context.SubmitChanges();
+            _mainContext.DataItems.InsertOnSubmit(item);
+            _mainContext.SubmitChanges();
             
             var h = BinarySearch(item, 0, DataItems.Count);
             DataItems.Insert(h, item);
             RaisePropertyChanged(() => GroupItems);
         }
+        public void AddParametr(Parametr p)   
+        {
+            _mainContext.Parametrs.InsertOnSubmit(p);
+            _mainContext.SubmitChanges();
+        }
         public void DeleteItem(DataItem item) 
         {
-            var tr = _context.DataItems.First(x => x.ItemId == item.ItemId);
-            _context.DataItems.DeleteOnSubmit(tr);
-            _context.SubmitChanges();
+            var tr = _mainContext.DataItems.First(x => x.ItemId == item.ItemId);
+            _mainContext.DataItems.DeleteOnSubmit(tr);
+            _mainContext.SubmitChanges();
             
             DataItems.Remove(item);
             RaisePropertyChanged("GroupItems");
         }
+        public void DeleteParamrtr(Parametr p)
+        {
+            var pt = _mainContext.Parametrs.First(x => x.Id == p.Id); //TODO есть ли смысл??
+            _mainContext.Parametrs.DeleteOnSubmit(p);
+            _mainContext.SubmitChanges();
+        }
         public void DeleteAll()               
         {
-            _context.DataItems.DeleteAllOnSubmit(_context.DataItems);
-            _context.SubmitChanges();
+            _mainContext.DataItems.DeleteAllOnSubmit(_mainContext.DataItems);
+            _mainContext.SubmitChanges();
             
             DataItems.Clear();
             RaisePropertyChanged("GroupItems");
         }
         public void UpdateItem(DataItem item, int count, DateTime date, DateTime time)
         {
-            var oldItem = _context.DataItems.First(x => x.ItemId == item.ItemId);
+            var oldItem = _mainContext.DataItems.First(x => x.ItemId == item.ItemId);
             oldItem.Count = count;
             oldItem.Date  = date;
             oldItem.Time  = time;
-            _context.SubmitChanges();
+            _mainContext.SubmitChanges();
 
             var first = DataItems.First(x => x.ItemId == item.ItemId);
             first.Count = count;
             first.Date = date;
             first.Time = time;
             RaisePropertyChanged("GroupItems");
+        }
+        public void UpdateParametr(string name, string type, List<string> enumList = null)
+        {
+            throw new NotImplementedException();
         }
 
         private int BinarySearch(DataItem item, int left, int right)
@@ -258,35 +247,27 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         public void ReadSettings()
         {
-            using (var db = new AppInfoContext())
-            {
-                var appInfo = (from AppInfo app in db.AppInfo select app).First();
+            var appInfo = (from AppInfo app in _appInfoContext.AppInfo select app).First();
 
-                _parametr = appInfo.Parametr;
-                _lastActiveTab = appInfo.LastTab;
-            }
+            _parametr = appInfo.Parametr;
+            _lastActiveTab = appInfo.LastTab;
         }
 
         private void ChangeParametr(string parametr)
         {
-            using (var db = new AppInfoContext())
-            {
-                var appInfo = db.AppInfo.First();
+            var appInfo = _appInfoContext.AppInfo.First();
 
-                appInfo.Parametr = parametr;
-                db.SubmitChanges();
-            }
+            appInfo.Parametr = parametr;
+            _appInfoContext.SubmitChanges();
         }
 
         private void ChangeLastTab(Tab tab)
         {
-            using (var db = new AppInfoContext())
-            {
-                var appInfo = db.AppInfo.First();
+            var appInfo = _appInfoContext.AppInfo.First();
 
-                appInfo.LastTab = tab;
-                db.SubmitChanges();
-            }
+            appInfo.LastTab = tab;
+            _appInfoContext.SubmitChanges();
+            
         }
 
         #endregion

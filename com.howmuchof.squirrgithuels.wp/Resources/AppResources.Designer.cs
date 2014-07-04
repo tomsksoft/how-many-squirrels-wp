@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace com.howmuchof.squirrgithuels.wp.Resources {
+    using System;
+    
+    
     /// <summary>
     ///   Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
     /// </summary>
@@ -172,6 +175,15 @@ namespace com.howmuchof.squirrgithuels.wp.Resources {
         public static string NewParametrs {
             get {
                 return ResourceManager.GetString("NewParametrs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Список параметров.
+        /// </summary>
+        public static string ParametrList {
+            get {
+                return ResourceManager.GetString("ParametrList", resourceCulture);
             }
         }
         

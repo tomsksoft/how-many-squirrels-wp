@@ -171,4 +171,7 @@
   <data name="GraphView" xml:space="preserve">
     <value>Переключить вид графика</value>
   </data>
+  <data name="ParametrList" xml:space="preserve">
+    <value>Список параметров</value>
+  </data>
 </root>

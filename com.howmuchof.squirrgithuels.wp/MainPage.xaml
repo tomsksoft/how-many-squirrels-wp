@@ -125,10 +125,15 @@
                                     <TextBlock Text="{Binding ItemId}" Visibility="Collapsed"></TextBlock>
                                     <TextBlock Text="{Binding Time, Converter={StaticResource TimeConverter1}}" Grid.Row="0" Grid.Column="0" FontSize="40" HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
                                     <TextBlock Text="{Binding Date, Converter={StaticResource DateConverter1}}" Grid.Row="1" Grid.Column="0"               HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
-                                    <TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="-50,-10,0,0" />
+                                    <!--<TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="-50,-10,0,0" />-->
                                 </Grid>
                             </DataTemplate>
                         </toolkit:LongListMultiSelector.ItemTemplate>
+                        <toolkit:LongListMultiSelector.ItemInfoTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Count}" FontSize="40" Margin="-110,-15,0,0" />
+                            </DataTemplate>
+                        </toolkit:LongListMultiSelector.ItemInfoTemplate>
                     </toolkit:LongListMultiSelector>
                 </Grid>
             </phone:PivotItem>

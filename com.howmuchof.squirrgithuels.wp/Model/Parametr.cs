@@ -11,7 +11,7 @@
  * Created by Nadyrshin Stanislav on 02.07.2014
  */
 
-using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -39,9 +39,20 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             Name = name;
         }
 
+        public Parametr(string name, IEnumerable<string> enumList)
+        {
+            _items = new EntitySet<DataItem>(AttachItem, DetachItem);
+            Type = "enum[";
+            Name = name;
+
+            foreach (var i in enumList)
+                Type += i + ";";
+            Type += "]";
+        }
+
         //[Column(DbType = "INT NOT NULL IDENTITY", IsDbGenerated = true, IsPrimaryKey = true)]
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
-        public int Id
+        public int Id      
         {
             get
             {
@@ -58,7 +69,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         }
 
         [Column]
-        public string Type
+        public string Type 
         {
             get { return _type; }
             set
@@ -72,7 +83,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         }
 
         [Column]
-        public string Name
+        public string Name 
         {
             get { return _name; }
             set
@@ -84,6 +95,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
                 NotifyPropertyChanged("Name");
             }
         }
+
 
         [Column(IsVersion = true)]
         private Binary _version;

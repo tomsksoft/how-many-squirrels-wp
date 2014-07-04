@@ -12,14 +12,16 @@
  */
 
 using System;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Navigation;
+using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Controls;
 
 namespace com.howmuchof.squirrgithuels.wp
 {
-    public partial class Settings : PhoneApplicationPage
+    public partial class Settings
     {
         // Constructor
         public Settings()
@@ -45,6 +47,14 @@ namespace com.howmuchof.squirrgithuels.wp
         //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
         //    ApplicationBar.MenuItems.Add(appBarMenuItem);
         //}
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var tr = NavigationContext.QueryString["Parametr"];
+            //_currentParametr = ViewModelLocator.Main.Parametrs.First(x => x.Name == tr);
+            base.OnNavigatedTo(e);
+        }
+
         private void Ok(object sender, EventArgs e)
         {
             if(Box.Text == "") return;
@@ -53,8 +63,8 @@ namespace com.howmuchof.squirrgithuels.wp
             if (MessageBox.Show("Все существующие записи будут стерты", "Вы уверены?", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 ((MainViewModel) DataContext).DeleteAll();
 
-            ViewModelLocator.Main.Parametr = Box.Text;
-
+            //ViewModelLocator.Main.Parametr = ViewModelLocator.Main.Parametrs.First(x => );
+            throw new NotImplementedException();
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
         }

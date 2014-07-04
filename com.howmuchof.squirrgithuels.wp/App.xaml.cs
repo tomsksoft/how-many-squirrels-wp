@@ -124,7 +124,6 @@ namespace com.howmuchof.squirrgithuels.wp
 
             ViewModelLocator.Main.ReadDataFromDb();
 
-            
         }
 
 
