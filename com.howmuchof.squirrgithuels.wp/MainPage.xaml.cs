@@ -138,7 +138,9 @@ namespace com.howmuchof.squirrgithuels.wp
 
         private void AddButton_Click(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/AddPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(ViewModelLocator.Main.ActiveParametr.IsEnum
+                ? new Uri("/AddEnumPage.xaml", UriKind.Relative)
+                : new Uri("/AddPage.xaml", UriKind.Relative));
         }
 
         private void SelectButtonOnClick(object sender, EventArgs eventArgs)
@@ -166,8 +168,10 @@ namespace com.howmuchof.squirrgithuels.wp
         private void OnTap(object sender, GestureEventArgs e)
         {
             var block = (TextBlock) ((Grid) sender).Children[0];
-            using (var db = new ItemDataContext())
-                NavigationService.Navigate(new Uri("/AddPage.xaml?Item=" + block.Text, UriKind.Relative));
+                NavigationService.Navigate(new Uri( 
+                    (ViewModelLocator.Main.ActiveParametr.IsEnum 
+                    ? "/AddEnumPage.xaml?Item="
+                    : "/AddPage.xaml?Item=" ) + block.Text, UriKind.Relative));
         }
 
         private void PhoneApplicationPage_BackKeyPress(object sender, CancelEventArgs e)

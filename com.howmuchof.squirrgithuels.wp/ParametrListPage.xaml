@@ -60,10 +60,12 @@
             Grid.Row="1"
             Margin="12,0,12,0">
 
-            <tk:LongListMultiSelector ItemsSource="{Binding Parametrs}">
+            <tk:LongListMultiSelector Name="MultiSelector" 
+                                      ItemsSource="{Binding Parametrs}"
+                                      IsSelectionEnabledChanged="MultiSelector_OnIsSelectionEnabledChanged">
                 <tk:LongListMultiSelector.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}" FontSize="35" Tap="UIElement_OnTap"/>
+                        <TextBlock Text="{Binding Name}" FontSize="50" Tap="UIElement_OnTap" Margin="0,-15,0,0"/>
                     </DataTemplate>
                 </tk:LongListMultiSelector.ItemTemplate>
                 <tk:LongListMultiSelector.ItemInfoTemplate>

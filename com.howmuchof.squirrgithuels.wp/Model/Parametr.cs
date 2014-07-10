@@ -11,28 +11,33 @@
  * Created by Nadyrshin Stanislav on 02.07.2014
  */
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Linq;
 
 namespace com.howmuchof.squirrgithuels.wp.Model
 {
+    public enum ParametrType { Int, Float, Time, Enum, Interval }
     [Table]
     public class Parametr : INotifyPropertyChanged, INotifyPropertyChanging
     {
+
         private int _id;
         private string _name;
-        private string _type;
-
+        private string _enum;
+        private ParametrType _type;
+        
         public Parametr()
         {
             _items = new EntitySet<DataItem>(AttachItem, DetachItem); 
-            Type = "int";
+            Type = ParametrType.Int;
             Name = "Белка";
         }
 
-        public Parametr(string name, string type)
+        public Parametr(string name, ParametrType type)
         {
             _items = new EntitySet<DataItem>(AttachItem, DetachItem); 
             Type = type;
@@ -42,15 +47,11 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         public Parametr(string name, IEnumerable<string> enumList)
         {
             _items = new EntitySet<DataItem>(AttachItem, DetachItem);
-            Type = "enum[";
+            Type = ParametrType.Enum;
             Name = name;
-
-            foreach (var i in enumList)
-                Type += i + ";";
-            Type += "]";
+            EnumList = enumList;
         }
 
-        //[Column(DbType = "INT NOT NULL IDENTITY", IsDbGenerated = true, IsPrimaryKey = true)]
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
         public int Id      
         {
@@ -67,9 +68,8 @@ namespace com.howmuchof.squirrgithuels.wp.Model
                 NotifyPropertyChanged("Id");
             }
         }
-
         [Column]
-        public string Type 
+        public ParametrType Type 
         {
             get { return _type; }
             set
@@ -81,7 +81,19 @@ namespace com.howmuchof.squirrgithuels.wp.Model
                 NotifyPropertyChanged("Type");
             }
         }
+        [Column(CanBeNull = true)]
+        private string Enum 
+        {
+            get { return _enum; }
+            set
+            {
+                if(_enum == value) return;
 
+                NotifyPropertyChanging("Enum");
+                _enum = value;
+                NotifyPropertyChanged("Enum");
+            }
+        }
         [Column]
         public string Name 
         {
@@ -96,14 +108,84 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             }
         }
 
+        #region Methods
 
+        public bool IsEnum     
+        {
+            get { return Type == ParametrType.Enum; }
+        }
+
+        public string TypeName 
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case ParametrType.Int:
+                        return "Целое число";
+                    case ParametrType.Float:
+                        return "Вещественное число";
+                    case ParametrType.Time:
+                        return "Момент времени";
+                    case ParametrType.Enum:
+                        return "Перечислимый параметр";
+                    case ParametrType.Interval:
+                        return "Интервал времени";
+                }
+                throw new ArgumentException();
+            }
+
+        }
+
+        public static ParametrType TypeFromName(string name)
+        {
+            switch (name)
+            {
+                case "Целое число":
+                    return ParametrType.Int;
+                case "Вещественное число":
+                    return ParametrType.Float;
+                case "Момент времени":
+                    return ParametrType.Time;
+                case "Перечислимый параметр":
+                    return ParametrType.Enum;
+                case "Интервал времени":
+                    return ParametrType.Interval;
+            }
+            throw new ArgumentException();
+        }
+
+        public IEnumerable<string> EnumList  
+        {
+            get
+            {
+                return IsEnum && Enum != null
+                    ? Enum.Split(';').Where(x => x != "")
+                    : null;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    Enum = ""; 
+                    return;
+                }
+
+                Type = ParametrType.Enum;
+                Enum = "";
+                foreach (var i in value.Where(x => x != ""))
+                    Enum += i + ";";
+            }
+        }
+
+        #endregion
+        
         [Column(IsVersion = true)]
         private Binary _version;
 
         // Define the entity set for the collection side of the relationship.
         private readonly EntitySet<DataItem> _items;
-
-
+        
         [Association(Storage = "_items", OtherKey = "ParametrId", ThisKey = "Id")]
         public EntitySet<DataItem> Items
         {
@@ -125,10 +207,31 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             item.Parametr = null;
         }
 
+        #region Overrides
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((Parametr) obj);
+        }
+        
+        private bool Equals(Parametr other)
+        {
+            return _name == other._name;
+        }
+        
+        public override int GetHashCode()
+        {
+            return _id;
+        }
+
         public override string ToString()
         {
             return Type + " " + Name;
         }
+
+        #endregion
 
         #region INotifyPropertyChanged AND INotifyPropertyChanging MEMBERS
 

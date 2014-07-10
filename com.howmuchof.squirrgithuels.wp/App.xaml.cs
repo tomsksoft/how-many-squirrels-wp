@@ -110,7 +110,7 @@ namespace com.howmuchof.squirrgithuels.wp
                         // Perform the database update in a single transaction.
                         dbUpdater.Execute();
 
-                        var p = new Parametr(ViewModelLocator.Main.Parametr, "int");
+                        var p = new Parametr(ViewModelLocator.Main.Parametr, ParametrType.Int);
                         db.Parametrs.InsertOnSubmit(p);
                         db.SubmitChanges();
 
@@ -120,7 +120,6 @@ namespace com.howmuchof.squirrgithuels.wp
                         db.SubmitChanges();
                     }
                 }
-
 
             ViewModelLocator.Main.ReadDataFromDb();
 

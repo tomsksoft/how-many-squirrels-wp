@@ -23,7 +23,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     {
         public AddViewModel()
         {
-            Count = 1;
+            Count = "1";
             Date = DateTime.Now;
             var t = new DispatcherTimer { Interval = new TimeSpan(0, 0, 1) };
             t.Tick += delegate { if (!IsSelfTime) Date = DateTime.Now; };
@@ -31,7 +31,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         }
 
         private bool     _isSelfTime;
-        private int      _count;
+        private string   _count;
         private DateTime _date;
 
         public DateTime Date  
@@ -49,18 +49,17 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 RaisePropertyChanged("Date");
             }
         }
-        public int      Count 
+        public string   Count 
         {
             get { return _count; }
             set
             {
                 if (_count == value) return;
 
-                _count = value < 1 ? 1 : value;
+                _count = value;
                 RaisePropertyChanged("Count");
             }
         }
-
         public bool IsSelfTime
         {
             get { return _isSelfTime; }
@@ -90,7 +89,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         private void Minus()
         {
-            Count--;
+            int outint;
+            Count = int.TryParse(Count, out outint) 
+                ? (outint - 1).ToString() 
+                : (float.Parse(Count) - .5).ToString();
         }
 
         #endregion
@@ -111,7 +113,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         private void Plus()
         {
-            Count++;
+            int outint;
+            Count = int.TryParse(Count, out outint)
+                ? (outint + 1).ToString()
+                : (float.Parse(Count) + .5).ToString();
         }
 
         #endregion

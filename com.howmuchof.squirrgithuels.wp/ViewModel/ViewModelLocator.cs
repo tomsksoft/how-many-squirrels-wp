@@ -28,19 +28,9 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            //if (ViewModelBase.IsInDesignModeStatic)
-            //{
-            //    SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
-            //}
-            //else
-            //{
-            //    SimpleIoc.Default.Register<IDataService, DataItems>();
-            //}
-
+            
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddViewModel>();
-            
         }
 
         /// <summary>
@@ -64,7 +54,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
                 return ServiceLocator.Current.GetInstance<AddViewModel>();
             }
         }
-
+        
         /// <summary>
         /// Cleans up all the resources.
         /// </summary>

@@ -24,6 +24,13 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     {
         public DataItem(int count, DateTime date, DateTime time)
         {
+            Count = count.ToString();
+            Date = date;
+            Time = time;
+        }
+
+        public DataItem(string count, DateTime date, DateTime time)
+        {
             Count = count;
             Date = date;
             Time = time;
@@ -31,19 +38,19 @@ namespace com.howmuchof.squirrgithuels.wp.Model
 
         public DataItem()
         {
-            Count = 1;
+            Count = "1";
             Date  = DateTime.Now;
             Time  = DateTime.Now;
         }
 
 
-        private int _itemId;
-        private object _count;
+        private int      _itemId;
+        private string   _count;
         private DateTime _date;
         private DateTime _time;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
-        public int ItemId
+        public int ItemId    
         {
             get
             {
@@ -51,30 +58,49 @@ namespace com.howmuchof.squirrgithuels.wp.Model
             }
             set
             {
-                if (_itemId != value)
-                {
-                    NotifyPropertyChanging("ItemId");
-                    _itemId = value;
-                    NotifyPropertyChanged("ItemId");
-                }
+                if (_itemId == value) return;
+
+                NotifyPropertyChanging("ItemId");
+                _itemId = value;
+                NotifyPropertyChanged("ItemId");
             }
         }
         [Column]
-        public object Count
+        public string Count  
         {
             get { return _count; }
             set
             {
-                if (_count != value)
+                if (_count == value) return;
+
+                NotifyPropertyChanging("Count");
+                _count = value;
+                NotifyPropertyChanged("Count");
+            }
+        }
+        public object NormalValue 
+        {
+            get
+            {
+                switch (Parametr.Type)
                 {
-                    NotifyPropertyChanging("Count");
-                    _count = value;
-                    NotifyPropertyChanged("Count");
+                    case ParametrType.Int:
+                        return int.Parse(Count);
+                    case ParametrType.Float:
+                        return float.Parse(Count);
+                    case ParametrType.Time:
+                        return DateTime.Parse(Count);
+                    case ParametrType.Enum:
+                        return Parametr.EnumList;
+                    case ParametrType.Interval:
+                        return TimeSpan.Parse(Count);
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
         [Column]
-        public DateTime Date
+        public DateTime Date 
         {
             get { return _date; }
             set
@@ -85,18 +111,17 @@ namespace com.howmuchof.squirrgithuels.wp.Model
                 NotifyPropertyChanged("Date");
             }
         }
-        public string DateS 
+        public string DateS  
         { 
-            get { return string.Format("{0}.{1:00}", Date.Day, Date.Month); } 
+            get { return string.Format("{0:00}.{1:00}", Date.Day, Date.Month); } 
             set 
             {
                 NotifyPropertyChanging("DateS");
                 NotifyPropertyChanged("DateS"); 
             } 
         }
-
         [Column]
-        public DateTime Time
+        public DateTime Time 
         {
             get { return _time; }
             set

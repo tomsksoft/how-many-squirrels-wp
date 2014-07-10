@@ -14,7 +14,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using com.howmuchof.squirrgithuels.wp.Model;
@@ -47,10 +49,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             {
                 MaxTime = DateTime.Now.Date;
                 MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
-                RaisePropertyChanged("GroupItems");
+                RaisePropertyChanged(() => GroupItems);
             };
 
-            _mainContext = new ItemDataContext();
+            _mainContext    = new ItemDataContext();
             _appInfoContext = new AppInfoContext();
             
             //SetLine();
@@ -61,25 +63,34 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         public ObservableCollection<DataItem> DataItems  
         {
             get { return _dataItems; }
-            private set
+            set
             {
                 if (_dataItems == value) return;
-                
-                _dataItems = new ObservableCollection<DataItem>(value.OrderByDescending(x => x.Time));
-                RaisePropertyChanged("DataItems");
-                RaisePropertyChanged("GroupItems");
+
+                _dataItems = value;
+
+                RaisePropertyChanged(() => DataItems);
+                RaisePropertyChanged(() => GroupItems);
             }
         }
-        public IEnumerable<DataItem> GroupItems 
+        public IEnumerable<object> GroupItems 
         {
             get
             {
+                return null;
+                //var tr = (from item in _mainContext.DataItems
+                //         orderby item.Time
+                //         group item by item.Date into lol
+                //         select new { DateS = lol.Key.ToShortDateString(), Date = lol.Key, Count = lol.Max(x => x.Count) }).ToArray();
+
+                //return tr;
+                
                 if (!DataItems.Any()) return null;
                 var tmp = DataItems.OrderBy(x => x.Date).GroupBy(x => x.Date);
                 var items = new ObservableCollection<DataItem>();
                 
                 foreach (var l in tmp.Where(l => l.Key.Date >= MinTime.Date && l.Key.Date <= MaxTime.Date))
-                    items.Add(new DataItem(l.Sum(x => (int)x.Count), l.Key, l.Key));
+                    items.Add(new DataItem(l.Sum(x => int.Parse(x.Count)), l.Key, l.Key));
                 
                 return items.Count == 0 ? null : items;
             }
@@ -98,10 +109,17 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
                 Flag = Visibility.Collapsed;
 
-                RaisePropertyChanged("Parametr");
+                RaisePropertyChanged(() => Parametr);
+                RaisePropertyChanged(() => ActiveParametr);
+                RaisePropertyChanged(() => DataItems);
             }
         }
-        public ObservableCollection<Parametr> Parametrs
+        public Parametr ActiveParametr 
+        {
+            get { return _mainContext.Parametrs.First(x => x.Name == Parametr); }
+            set { Parametr = value.Name; }
+        }
+        public IEnumerable<Parametr> Parametrs
         {
             get { return new ObservableCollection<Parametr>(_mainContext.Parametrs.ToArray()); }
         } 
@@ -161,7 +179,10 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         public void ReadDataFromDb()          
         {
-            var items = from DataItem item in _mainContext.DataItems select item;
+            var items = from DataItem item in _mainContext.DataItems 
+                        orderby item.Time descending 
+                        select item;
+
             DataItems = new ObservableCollection<DataItem>(items);
 
             MaxTime = DateTime.Now.Date;
@@ -172,14 +193,19 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             _mainContext.DataItems.InsertOnSubmit(item);
             _mainContext.SubmitChanges();
             
-            var h = BinarySearch(item, 0, DataItems.Count);
+            var h = BinarySearch(item);
             DataItems.Insert(h, item);
             RaisePropertyChanged(() => GroupItems);
+
         }
         public void AddParametr(Parametr p)   
         {
+            if (Parametrs.Any(parametr => parametr.Name == p.Name))
+                throw new Exception("Элемент с таким именем уже существует");
+
             _mainContext.Parametrs.InsertOnSubmit(p);
             _mainContext.SubmitChanges();
+            RaisePropertyChanged(() => Parametrs);
         }
         public void DeleteItem(DataItem item) 
         {
@@ -192,39 +218,59 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         }
         public void DeleteParamrtr(Parametr p)
         {
-            var pt = _mainContext.Parametrs.First(x => x.Id == p.Id); //TODO есть ли смысл??
-            _mainContext.Parametrs.DeleteOnSubmit(p);
+            var pt = _mainContext.Parametrs.First(x => x.Id == p.Id); 
+            _mainContext.Parametrs.DeleteOnSubmit(pt);
             _mainContext.SubmitChanges();
+            RaisePropertyChanged(() => Parametrs);
         }
-        public void DeleteAll()               
+        public void DeleteAll(Parametr parametr)               
         {
-            _mainContext.DataItems.DeleteAllOnSubmit(_mainContext.DataItems);
+            _mainContext.DataItems.DeleteAllOnSubmit(_mainContext.DataItems.Where(x => x.Parametr.Equals(parametr)));
             _mainContext.SubmitChanges();
             
             DataItems.Clear();
-            RaisePropertyChanged("GroupItems");
+            RaisePropertyChanged(() => GroupItems);
         }
-        public void UpdateItem(DataItem item, int count, DateTime date, DateTime time)
+        public void UpdateItem(DataItem item, object count, DateTime date, DateTime time)
         {
             var oldItem = _mainContext.DataItems.First(x => x.ItemId == item.ItemId);
-            oldItem.Count = count;
+            oldItem.Count = count.ToString();
             oldItem.Date  = date;
             oldItem.Time  = time;
             _mainContext.SubmitChanges();
 
             var first = DataItems.First(x => x.ItemId == item.ItemId);
-            first.Count = count;
+            first.Count = count.ToString();
             first.Date = date;
             first.Time = time;
             RaisePropertyChanged("GroupItems");
         }
-        public void UpdateParametr(string name, string type, List<string> enumList = null)
+        public void UpdateParametr(Parametr parametr, string name, ParametrType type)
         {
-            throw new NotImplementedException();
+            var param = Parametrs.First(x => x.Equals(parametr));
+            param.Name = name;
+            param.Type = type;
+            param.EnumList = null;
+
+            _mainContext.SubmitChanges();
+            RaisePropertyChanged(() => Parametrs);
         }
 
-        private int BinarySearch(DataItem item, int left, int right)
+        public void UpdateParametr(Parametr parametr, string name, IEnumerable<string> enumList)
         {
+            var param = Parametrs.First(x => x.Equals(parametr));
+            param.Name = name;
+            param.Type = ParametrType.Enum;
+            param.EnumList = enumList;
+
+            _mainContext.SubmitChanges();
+            RaisePropertyChanged(() => Parametrs);
+        }
+
+        private int BinarySearch(DataItem item)
+        {
+            var left = 0;
+            var right = DataItems.Count;
             while (true)
             {
                 var mid = left + (right - left)/2;
