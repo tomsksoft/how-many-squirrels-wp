@@ -114,14 +114,11 @@ namespace com.howmuchof.squirrgithuels.wp
                         db.Parametrs.InsertOnSubmit(p);
                         db.SubmitChanges();
 
-                        foreach (var item in db.DataItems)
-                            item.Parametr = p;
+                        p.Items.AddRange(db.DataItems);
 
                         db.SubmitChanges();
                     }
                 }
-
-            ViewModelLocator.Main.ReadDataFromDb();
 
         }
 

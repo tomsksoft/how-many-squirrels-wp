@@ -46,6 +46,7 @@ namespace com.howmuchof.squirrgithuels.wp
                 Parametr = ViewModelLocator.Main.Parametrs.First(x => x.Name == tr);
 
                 var l = Parametr.EnumList;
+                if(l != null)
                 foreach (var s in l)
                     EnumBox.Text += s + "; ";
 
@@ -76,7 +77,7 @@ namespace com.howmuchof.squirrgithuels.wp
                         MessageBox.Show("Все существующие записи будут стерты", "Вы уверены?", MessageBoxButton.OKCancel) ==
                         MessageBoxResult.OK)
                     {
-                        ((MainViewModel) DataContext).DeleteAll(Parametr);
+                        ViewModelLocator.Main.DeleteAll(Parametr);
 
                         if(((ParametrType)Picker.SelectedIndex) == ParametrType.Enum)
                             ViewModelLocator.Main.UpdateParametr(Parametr, Box.Text, GetEnum());
@@ -100,7 +101,7 @@ namespace com.howmuchof.squirrgithuels.wp
                     return;
                 }
             }
-            if(sender is bool) ViewModelLocator.Main.Parametr = Parametr.Name;
+            if(sender is bool) ViewModelLocator.Main.ActiveParametr = Parametr;
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();

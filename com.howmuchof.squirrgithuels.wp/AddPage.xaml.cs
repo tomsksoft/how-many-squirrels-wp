@@ -36,7 +36,7 @@ namespace com.howmuchof.squirrgithuels.wp
             if (_item != null)
                 ViewModelLocator.Main.UpdateItem(_item, add.Count, add.Date, add.Date);
             else
-                ViewModelLocator.Main.AddItem(new DataItem(add.Count, add.Date, add.Date));
+                ViewModelLocator.Main.AddItem(new DataItem(add.Count, add.Date, add.Date, ViewModelLocator.Main.ActiveParametr));
 
             if(NavigationService.CanGoBack)
                 NavigationService.GoBack();

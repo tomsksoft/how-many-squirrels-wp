@@ -29,7 +29,10 @@ namespace com.howmuchof.squirrgithuels.wp
             if (_item != null)
                 ViewModelLocator.Main.UpdateItem(_item, count, add.Date, add.Date);
             else
-                ViewModelLocator.Main.AddItem(new DataItem(count, add.Date, add.Date));
+            {
+                var param = ViewModelLocator.Main.ActiveParametr;
+                ViewModelLocator.Main.AddItem(new DataItem(count, add.Date, add.Date, param));
+            }
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
@@ -47,7 +50,7 @@ namespace com.howmuchof.squirrgithuels.wp
                 using (var db = new ItemDataContext())
                 {
                     _item = db.DataItems.FirstOrDefault(
-                        x => x.ItemId.ToString() == NavigationContext.QueryString["Item"]); // TODO Copy/Past
+                        x => x.ItemId.ToString() == NavigationContext.QueryString["Item"]); 
                     if (_item == null) return;
 
                     var context = (AddViewModel)DataContext;

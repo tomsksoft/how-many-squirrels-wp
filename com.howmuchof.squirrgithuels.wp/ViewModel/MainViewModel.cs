@@ -31,7 +31,6 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<DataItem> _dataItems;
         private string           _parametr;
         private Tab              _lastActiveTab;
         private Visibility       _flag;
@@ -43,35 +42,28 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         public MainViewModel() 
         {
-            DataItems = new ObservableCollection<DataItem>();
-
-            DataItems.CollectionChanged += delegate
-            {
-                MaxTime = DateTime.Now.Date;
-                MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
-                RaisePropertyChanged(() => GroupItems);
-            };
-
             _mainContext    = new ItemDataContext();
             _appInfoContext = new AppInfoContext();
             
-            //SetLine();
+            //DataItems = new ObservableCollection<DataItem>();
+
+            //DataItems.CollectionChanged += delegate
+            //{
+            //    MaxTime = DateTime.Now.Date;
+            //    MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
+            //    RaisePropertyChanged(() => GroupItems);
+            //};
+
+            MaxTime = DateTime.Now.Date;
+            MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
+            
         }
 
         #region Properties
 
         public ObservableCollection<DataItem> DataItems  
         {
-            get { return _dataItems; }
-            set
-            {
-                if (_dataItems == value) return;
-
-                _dataItems = value;
-
-                RaisePropertyChanged(() => DataItems);
-                RaisePropertyChanged(() => GroupItems);
-            }
+            get { return new ObservableCollection<DataItem>(ActiveParametr.Items.OrderByDescending(x => x.Time)); }
         }
         public IEnumerable<object> GroupItems 
         {
@@ -85,20 +77,20 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
                 //return tr;
                 
-                if (!DataItems.Any()) return null;
-                var tmp = DataItems.OrderBy(x => x.Date).GroupBy(x => x.Date);
-                var items = new ObservableCollection<DataItem>();
+                //if (!DataItems.Any()) return null;
+                //var tmp = DataItems.OrderBy(x => x.Date).GroupBy(x => x.Date);
+                //var items = new ObservableCollection<DataItem>();
                 
-                foreach (var l in tmp.Where(l => l.Key.Date >= MinTime.Date && l.Key.Date <= MaxTime.Date))
-                    items.Add(new DataItem(l.Sum(x => int.Parse(x.Count)), l.Key, l.Key));
+                //foreach (var l in tmp.Where(l => l.Key.Date >= MinTime.Date && l.Key.Date <= MaxTime.Date))
+                //    items.Add(new DataItem(l.Sum(x => int.Parse(x.Count)), l.Key, l.Key));
                 
-                return items.Count == 0 ? null : items;
+                //return items.Count == 0 ? null : items;
             }
         }
         public string Parametr   
         {
             get { return _parametr; }
-            set
+            private set
             {
                 if (value == _parametr)
                     return;
@@ -117,7 +109,12 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         public Parametr ActiveParametr 
         {
             get { return _mainContext.Parametrs.First(x => x.Name == Parametr); }
-            set { Parametr = value.Name; }
+            set
+            {
+                Parametr = value.Name;
+                RaisePropertyChanged(() => DataItems);
+                RaisePropertyChanged(() => ActiveParametr);
+            }
         }
         public IEnumerable<Parametr> Parametrs
         {
@@ -177,25 +174,13 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         
         #region База данных 
 
-        public void ReadDataFromDb()          
-        {
-            var items = from DataItem item in _mainContext.DataItems 
-                        orderby item.Time descending 
-                        select item;
-
-            DataItems = new ObservableCollection<DataItem>(items);
-
-            MaxTime = DateTime.Now.Date;
-            MinTime = MaxTime - new TimeSpan(5, 0, 0, 0);
-        }
         public void AddItem(DataItem item)    
         {
             _mainContext.DataItems.InsertOnSubmit(item);
             _mainContext.SubmitChanges();
             
-            var h = BinarySearch(item);
-            DataItems.Insert(h, item);
             RaisePropertyChanged(() => GroupItems);
+            RaisePropertyChanged(() => DataItems);
 
         }
         public void AddParametr(Parametr p)   
@@ -210,25 +195,27 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
         public void DeleteItem(DataItem item) 
         {
             var tr = _mainContext.DataItems.First(x => x.ItemId == item.ItemId);
+            tr.Parametr.Items.Remove(tr);
             _mainContext.DataItems.DeleteOnSubmit(tr);
             _mainContext.SubmitChanges();
             
-            DataItems.Remove(item);
-            RaisePropertyChanged("GroupItems");
+            RaisePropertyChanged(() => GroupItems);
+            RaisePropertyChanged(() => DataItems);
         }
         public void DeleteParamrtr(Parametr p)
         {
-            var pt = _mainContext.Parametrs.First(x => x.Id == p.Id); 
-            _mainContext.Parametrs.DeleteOnSubmit(pt);
+            var pt = _mainContext.Parametrs.First(x => x.Id == p.Id);
+
+            _mainContext.DataItems.DeleteAllOnSubmit(pt.Items); // сначала удалить все элементы
+            _mainContext.Parametrs.DeleteOnSubmit(pt);          // потом сам параметр
             _mainContext.SubmitChanges();
             RaisePropertyChanged(() => Parametrs);
         }
-        public void DeleteAll(Parametr parametr)               
+        public void DeleteAll(Parametr parametr)
         {
             _mainContext.DataItems.DeleteAllOnSubmit(_mainContext.DataItems.Where(x => x.Parametr.Equals(parametr)));
             _mainContext.SubmitChanges();
             
-            DataItems.Clear();
             RaisePropertyChanged(() => GroupItems);
         }
         public void UpdateItem(DataItem item, object count, DateTime date, DateTime time)
@@ -239,11 +226,7 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             oldItem.Time  = time;
             _mainContext.SubmitChanges();
 
-            var first = DataItems.First(x => x.ItemId == item.ItemId);
-            first.Count = count.ToString();
-            first.Date = date;
-            first.Time = time;
-            RaisePropertyChanged("GroupItems");
+            RaisePropertyChanged(() => GroupItems);
         }
         public void UpdateParametr(Parametr parametr, string name, ParametrType type)
         {
@@ -267,25 +250,25 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
             RaisePropertyChanged(() => Parametrs);
         }
 
-        private int BinarySearch(DataItem item)
-        {
-            var left = 0;
-            var right = DataItems.Count;
-            while (true)
-            {
-                var mid = left + (right - left)/2;
+        //private int BinarySearch(DataItem item)
+        //{
+        //    var left = 0;
+        //    var right = DataItems.Count;
+        //    while (true)
+        //    {
+        //        var mid = left + (right - left)/2;
 
-                if (right <= left) return mid;
+        //        if (right <= left) return mid;
 
-                if (item.Time > DataItems[mid].Time)
-                {
-                    right = mid;
-                    continue;
-                }
+        //        if (item.Time > DataItems[mid].Time)
+        //        {
+        //            right = mid;
+        //            continue;
+        //        }
 
-                left = mid + 1;
-            }
-        }
+        //        left = mid + 1;
+        //    }
+        //}
 
         #endregion
 

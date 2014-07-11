@@ -107,11 +107,11 @@
                     <TextBlock Text="Значение" FontSize="30" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
 
 
-                    <toolkit:LongListMultiSelector ItemsSource="{Binding DataItems}" Grid.Column="1"
+                    <toolkit:LongListMultiSelector ItemsSource="{Binding DataItems}" Grid.Column="0" Grid.ColumnSpan="2"
                                                    Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                   Margin="122,936,-350,-916" Name="MultiSelector" 
-                                                   IsSelectionEnabledChanged="MultiSelector_IsSelectionEnabledChanged"
-                                                   toolkit:TiltEffect.IsTiltEnabled="True">
+                                                   Name="MultiSelector" 
+                                                   IsSelectionEnabledChanged="MultiSelector_IsSelectionEnabledChanged" 
+                                                   Margin="0,20,0,0">
                         <toolkit:LongListMultiSelector.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,10" Tap="OnTap">

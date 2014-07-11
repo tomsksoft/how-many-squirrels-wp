@@ -184,13 +184,17 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         private Binary _version;
 
         // Define the entity set for the collection side of the relationship.
-        private readonly EntitySet<DataItem> _items;
+        private EntitySet<DataItem> _items = new EntitySet<DataItem>();
         
-        [Association(Storage = "_items", OtherKey = "ParametrId", ThisKey = "Id")]
+        [Association(Storage = "_items", OtherKey = "ParametrId"/*, ThisKey = "Id"*/)]
         public EntitySet<DataItem> Items
         {
             get { return _items; }
-            set { _items.Assign(value); }
+            set
+            {
+                _items.Assign(value);
+                NotifyPropertyChanged("Items");
+            }
         }
 
         // Called during an add operation

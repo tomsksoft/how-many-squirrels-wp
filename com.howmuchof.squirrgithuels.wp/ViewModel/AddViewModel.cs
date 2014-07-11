@@ -14,6 +14,7 @@
 using System;
 using System.Windows.Input;
 using System.Windows.Threading;
+using com.howmuchof.squirrgithuels.wp.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -89,9 +90,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         private void Minus()
         {
-            int outint;
-            Count = int.TryParse(Count, out outint) 
-                ? (outint - 1).ToString() 
+            Count = ViewModelLocator.Main.ActiveParametr.Type == ParametrType.Int
+                ? (int.Parse(Count)   -  1).ToString() 
                 : (float.Parse(Count) - .5).ToString();
         }
 
@@ -113,9 +113,8 @@ namespace com.howmuchof.squirrgithuels.wp.ViewModel
 
         private void Plus()
         {
-            int outint;
-            Count = int.TryParse(Count, out outint)
-                ? (outint + 1).ToString()
+            Count = ViewModelLocator.Main.ActiveParametr.Type == ParametrType.Int
+                ? (int.Parse(Count)   +  1).ToString()
                 : (float.Parse(Count) + .5).ToString();
         }
 

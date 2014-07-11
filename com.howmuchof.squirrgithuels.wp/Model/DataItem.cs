@@ -22,18 +22,20 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     [Table]
     public class DataItem : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        public DataItem(int count, DateTime date, DateTime time)
+        public DataItem(int count, DateTime date, DateTime time, Parametr parametr)
         {
             Count = count.ToString();
             Date = date;
             Time = time;
+            parametr.Items.Add(this);
         }
 
-        public DataItem(string count, DateTime date, DateTime time)
+        public DataItem(string count, DateTime date, DateTime time, Parametr parametr)
         {
             Count = count;
             Date = date;
             Time = time;
+            parametr.Items.Add(this);
         }
 
         public DataItem()
@@ -144,7 +146,7 @@ namespace com.howmuchof.squirrgithuels.wp.Model
         
         private EntityRef<Parametr> _parametr;
 
-        [Association(Storage = "_parametr", ThisKey = "ParametrId", OtherKey = "Id", IsForeignKey = true)]
+        [AssociationAttribute(Storage = "_parametr", ThisKey = "ParametrId"/*, OtherKey = "Id"*/, IsForeignKey = true)]
         public Parametr Parametr
         {
             get { return _parametr.Entity; }
