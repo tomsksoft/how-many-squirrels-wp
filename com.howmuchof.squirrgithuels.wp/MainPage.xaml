@@ -34,9 +34,17 @@
         <converters:TimeConverter x:Name="TimeConverter1" />
         <converters:DateConverter x:Name="DateConverter1" />
         <converters:ParametrConverter x:Name="ParametrConverter" />
+        <DataTemplate x:Key="DataTemplate1" x:Name="DataTemplate1">
+        	<TextBlock Text="{Binding Count}" FontSize="40" Margin="-150,-15,0,0" />
+        </DataTemplate>
+		<DataTemplate x:Key="DataTemplate2" x:Name="DataTemplate2">
+			<StackPanel>
+				<TextBlock Text="{Binding Count, Converter={StaticResource DateConverter1}}" />
+				<TextBlock Text="{Binding Count, Converter={StaticResource TimeConverter1}}" />
+			</StackPanel>
+		</DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid
          Background="Transparent"
          VerticalAlignment="Stretch">
@@ -46,29 +54,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- LOCALIZATION NOTE:
-            To localize the displayed strings copy their values to appropriately named
-            keys in the app's neutral language resource file (AppResources.resx) then
-            replace the hard-coded text value between the attributes' quotation marks
-            with the binding clause whose path points to that string name.
-
-            For example:
-
-                Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
-
-            This binding points to the template's string resource named "ApplicationTitle".
-
-            Adding supported languages in the Project Properties tab will create a
-            new resx file per language that can carry the translated values of your
-            UI strings. The binding in these examples will cause the value of the
-            attributes to be drawn from the .resx file that matches the
-            CurrentUICulture of the app at run time.
-         -->
-
-        <!--TitlePanel contains the name of the application and page title-->
-
         <TextBlock HorizontalAlignment="Right" Text="{Binding ActiveParametr, Converter={StaticResource ParametrConverter}}"/>
-        <phone:Pivot Name="pivot1" Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
+        <phone:Pivot x:Name="pivot1" Title="{Binding LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
                      Grid.Row="0" Grid.RowSpan="2" SelectionChanged="Pivot_SelectionChanged">
 
             <phone:PivotItem Header="{Binding LocalizedResources.MainPage, Source={StaticResource LocalizedStrings}}" ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -109,9 +96,9 @@
 
                     <toolkit:LongListMultiSelector ItemsSource="{Binding DataItems}" Grid.Column="0" Grid.ColumnSpan="2"
                                                    Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                   Name="MultiSelector" 
+                                                   x:Name="MultiSelector" 
                                                    IsSelectionEnabledChanged="MultiSelector_IsSelectionEnabledChanged" 
-                                                   Margin="0,20,0,0">
+                                                   Margin="0,20,0,0" ItemInfoTemplate="{StaticResource DataTemplate1}">
                         <toolkit:LongListMultiSelector.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,10" Tap="OnTap">
@@ -124,46 +111,19 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Text="{Binding ItemId}" Visibility="Collapsed"></TextBlock>
+                                    <TextBlock Text="{Binding ItemId}" Visibility="Collapsed"/>
                                     <TextBlock Text="{Binding Time, Converter={StaticResource TimeConverter1}}" Grid.Row="0" Grid.Column="0" FontSize="40" HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
                                     <TextBlock Text="{Binding Date, Converter={StaticResource DateConverter1}}" Grid.Row="1" Grid.Column="0"               HorizontalAlignment="Left"   Margin="0,-15,0,0"   />
-                                    <!--<TextBlock Text="{Binding Count}"                                           Grid.Row="0" Grid.Column="1" FontSize="40" HorizontalAlignment="Center" Margin="-50,-10,0,0" />-->
+                                    
                                 </Grid>
                             </DataTemplate>
                         </toolkit:LongListMultiSelector.ItemTemplate>
-                        <toolkit:LongListMultiSelector.ItemInfoTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Count}" FontSize="40" Margin="-110,-15,0,0" />
-                            </DataTemplate>
-                        </toolkit:LongListMultiSelector.ItemInfoTemplate>
                     </toolkit:LongListMultiSelector>
                 </Grid>
             </phone:PivotItem>
 
-            <phone:PivotItem Header="{Binding Source={StaticResource LocalizedStrings}, Path=LocalizedResources.GraphPage}">
+            <phone:PivotItem Header="{Binding LocalizedResources.GraphPage, Source={StaticResource LocalizedStrings}}">
 
-                <!--<chart:RadCartesianChart>
-                    <chart:RadCartesianChart.HorizontalAxis>
-                        <chart:DateTimeCategoricalAxis LabelFormat="dd:MM"  />
-                    </chart:RadCartesianChart.HorizontalAxis>
-
-                    <chart:RadCartesianChart.VerticalAxis>
-                        <chart:LinearAxis Title="{Binding Parametr}" />
-                    </chart:RadCartesianChart.VerticalAxis>
-                    
-                    <chart:RadCartesianChart.Series>
-                        <chart:BarSeries CategoryBinding="Date"
-                                         ValueBinding="Count"
-                                         ItemsSource="{Binding GroupItems}">
-                            <chart:BarSeries.PointTemplates>
-                                <DataTemplate>
-                                    <Rectangle Fill="{StaticResource PhoneForegroundBrush}"/>
-                                </DataTemplate>
-                            </chart:BarSeries.PointTemplates>
-                        </chart:BarSeries>
-                    </chart:RadCartesianChart.Series>
-                    
-                </chart:RadCartesianChart>-->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -175,14 +135,14 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding Source={StaticResource LocalizedStrings}, Path=LocalizedResources.TimeInteravl}"
+                    <TextBlock Text="{Binding LocalizedResources.TimeInteravl, Source={StaticResource LocalizedStrings}}"
                                Grid.ColumnSpan="2"/>
                     <toolkit:DatePicker Grid.Row="1" Grid.Column="0"
                                         Value="{Binding MinTime, Mode=TwoWay}"/>
                     <toolkit:DatePicker Grid.Row="1" Grid.Column="1"
                                         Value="{Binding MaxTime, Mode=TwoWay}"/>
 
-                    <sparrow:SparrowChart Name="Chart1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
+                    <sparrow:SparrowChart x:Name="Chart1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
 
                         <sparrow:SparrowChart.XAxis>
                             <sparrow:CategoryXAxis ShowCrossLines="False"/>
@@ -192,7 +152,7 @@
                             <sparrow:LinearYAxis Interval="1" MinValue="0"/>
                         </sparrow:SparrowChart.YAxis>
 
-                        <sparrow:ColumnSeries PointsSource="{Binding GroupItems}" Name="ColumnSeries"
+                        <sparrow:ColumnSeries PointsSource="{Binding GroupItems}" x:Name="ColumnSeries"
                                               StrokeThickness="1"
                                               Stroke="{StaticResource PhoneContrastBackgroundBrush}"
                                               XPath="DateS"
@@ -202,7 +162,7 @@
 
                     </sparrow:SparrowChart>
 
-                    <sparrow:SparrowChart Name="Chart2" Visibility="Collapsed"
+                    <sparrow:SparrowChart x:Name="Chart2" Visibility="Collapsed"
                                           Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
 
                         <sparrow:SparrowChart.XAxis>
@@ -242,14 +202,6 @@
 
         </phone:Pivot>
 
-
-        <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  The image has a top margin of -32px to
-            account for the System Tray. Set this to 0 (or remove the margin altogether)
-            if the System Tray is hidden.
-
-            Before shipping remove this XAML and the image itself.-->
-        <!--<Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0,-32,0,0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" />-->
     </Grid>
 
 </phone:PhoneApplicationPage>

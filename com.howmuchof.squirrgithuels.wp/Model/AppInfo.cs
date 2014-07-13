@@ -20,9 +20,9 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     [Table]
     public class AppInfo : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        private int _itemId;
-        private string _parametr;
-        private Tab _lastTab;
+        private int       _itemId;
+        private string    _parametr;
+        private Tab       _lastTab;
         private GraphView _graphView;
 
         public AppInfo()
@@ -120,6 +120,6 @@ namespace com.howmuchof.squirrgithuels.wp.Model
     }
 
     public enum Tab { Main=0, List=1, Grpah=2 }
-    public enum GraphView { Column }
+    public enum GraphView { Column, Line }
 
 }

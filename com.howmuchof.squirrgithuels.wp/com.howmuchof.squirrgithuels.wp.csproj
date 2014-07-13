@@ -97,11 +97,15 @@
     <Compile Include="AddPage.xaml.cs">
       <DependentUpon>AddPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddTimePage.xaml.cs">
+      <DependentUpon>AddTimePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\ParametrConverter.cs" />
+    <Compile Include="Converters\StringToTimeConverter.cs" />
     <Compile Include="Converters\TimeConverter.cs" />
     <Compile Include="Model\AppInfo.cs" />
     <Compile Include="Model\AppInfoContext.cs" />
@@ -138,6 +142,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTimePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

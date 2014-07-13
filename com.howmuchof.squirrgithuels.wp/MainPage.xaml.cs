@@ -15,6 +15,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using com.howmuchof.squirrgithuels.wp.Model;
 using com.howmuchof.squirrgithuels.wp.ViewModel;
 using Microsoft.Phone.Shell;
@@ -136,11 +137,36 @@ namespace com.howmuchof.squirrgithuels.wp
             ((MainViewModel) DataContext).LastActiveTab = (Tab) pivot1.SelectedIndex;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            MultiSelector.ItemInfoTemplate = 
+                ViewModelLocator.Main.ActiveParametr.Type == ParametrType.Time 
+                ? DataTemplate2 
+                : DataTemplate1;
+
+            base.OnNavigatedTo(e);
+        }
+
         private void AddButton_Click(object sender, EventArgs e)
         {
-            NavigationService.Navigate(ViewModelLocator.Main.ActiveParametr.IsEnum
-                ? new Uri("/AddEnumPage.xaml", UriKind.Relative)
-                : new Uri("/AddPage.xaml", UriKind.Relative));
+            string uri;
+            switch (ViewModelLocator.Main.ActiveParametr.Type)
+            {
+                case ParametrType.Int:
+                case ParametrType.Float:
+                    uri = "/AddPage.xaml";
+                    break;
+                case ParametrType.Interval:
+                case ParametrType.Time:
+                    uri = "/AddTimePage.xaml";
+                    break;
+                case ParametrType.Enum:
+                    uri = "/AddEnumPage.xaml";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
         private void SelectButtonOnClick(object sender, EventArgs eventArgs)

@@ -17,20 +17,16 @@ using System.Windows.Data;
 
 namespace com.howmuchof.squirrgithuels.wp.Converters
 {
-    public class TimeConverter : IValueConverter
+    public class StringToTimeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTime)
-                return ((DateTime) value).ToLongTimeString();
-            if (value is string)
-                return DateTime.Parse(value.ToString()).ToLongTimeString();
-            throw new ArgumentException();
+            return DateTime.Parse(value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return DateTime.Parse(value.ToString());
+            return ((DateTime)value).ToLongTimeString();
         }
     }
 }

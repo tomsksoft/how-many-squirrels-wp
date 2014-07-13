@@ -89,11 +89,11 @@ namespace com.howmuchof.squirrgithuels.wp
             {
                 try
                 {
-                    var param = ((ParametrType) Picker.SelectedIndex) == ParametrType.Enum
+                    Parametr = ((ParametrType) Picker.SelectedIndex) == ParametrType.Enum
                         ? new Parametr(Box.Text, GetEnum())
                         : new Parametr(Box.Text, (ParametrType) Picker.SelectedIndex);
 
-                    ViewModelLocator.Main.AddParametr(param);
+                    ViewModelLocator.Main.AddParametr(Parametr);
                 }
                 catch (Exception ex)
                 {
